@@ -23,7 +23,10 @@ namespace Harkkatyö
         {
             InitializeComponent();
         }
-
+        private int tempKeittoaika;
+        private int tempKeittolampotila;
+        private int tempKyllastysaika;
+        private int tempKyllastyspaine;
         private void Button_Click(object sender, RoutedEventArgs e)
         {
 
@@ -37,6 +40,11 @@ namespace Harkkatyö
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void Button_Click_3(object sender, RoutedEventArgs e)
+        {
+            this.Close();
         }
     }
 }

@@ -7,9 +7,9 @@
         mc:Ignorable="d"
         Title="Pääikkuna" Height="450" Width="800">
     <Grid>
-        <Button Content="Muokkaa parametreja" HorizontalAlignment="Left" Margin="659,389,0,0" VerticalAlignment="Top" Width="123"/>
+        <Button Content="Muokkaa parametreja" HorizontalAlignment="Left" Margin="659,389,0,0" VerticalAlignment="Top" Width="123" Click="Button_Click_1"/>
         <Button Content="Käynnistä sekvenssi" HorizontalAlignment="Left" Margin="413,389,0,0" VerticalAlignment="Top" Width="118" Click="Button_Click"/>
-        <Button Content="Keskeytä sekvenssi" HorizontalAlignment="Left" Margin="536,389,0,0" VerticalAlignment="Top" Width="118"/>
+        <Button Content="Keskeytä sekvenssi" HorizontalAlignment="Left" Margin="536,389,0,0" VerticalAlignment="Top" Width="118" Click="Button_Click_2"/>
         <Rectangle Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="160" Margin="45,34,0,0" Stroke="Black" VerticalAlignment="Top" Width="80"/>
         <Label Content="T200 pinnankorkeus" HorizontalAlignment="Left" Height="30" Margin="21,199,0,0" VerticalAlignment="Top" Width="129"/>
         <Rectangle Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="160" Margin="194,34,0,0" Stroke="Black" VerticalAlignment="Top" Width="80"/>

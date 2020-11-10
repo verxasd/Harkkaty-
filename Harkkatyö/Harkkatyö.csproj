@@ -64,9 +64,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Mittaus.cs" />
     <Compile Include="MuutaParametreja.xaml.cs">
       <DependentUpon>MuutaParametreja.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Prosessi.cs" />
+    <Compile Include="Saadin.cs" />
+    <Compile Include="Toimintalogiikka.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -109,6 +113,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
