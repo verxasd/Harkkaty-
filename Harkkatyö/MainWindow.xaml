@@ -5,9 +5,21 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Harkkatyö"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Pääikkuna" Height="450" Width="800">
     <Grid>
-        <Button Content="Button" HorizontalAlignment="Left" Margin="307,202,0,0" VerticalAlignment="Top" Width="75"/>
+        <Button Content="Muokkaa parametreja" HorizontalAlignment="Left" Margin="659,389,0,0" VerticalAlignment="Top" Width="123"/>
+        <Button Content="Käynnistä sekvenssi" HorizontalAlignment="Left" Margin="413,389,0,0" VerticalAlignment="Top" Width="118" Click="Button_Click"/>
+        <Button Content="Keskeytä sekvenssi" HorizontalAlignment="Left" Margin="536,389,0,0" VerticalAlignment="Top" Width="118"/>
+        <Rectangle Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="160" Margin="45,34,0,0" Stroke="Black" VerticalAlignment="Top" Width="80"/>
+        <Label Content="T200 pinnankorkeus" HorizontalAlignment="Left" Height="30" Margin="21,199,0,0" VerticalAlignment="Top" Width="129"/>
+        <Rectangle Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="160" Margin="194,34,0,0" Stroke="Black" VerticalAlignment="Top" Width="80"/>
+        <Label Content="T300 pinnankorkeus" HorizontalAlignment="Left" Height="30" Margin="170,199,0,0" VerticalAlignment="Top" Width="129"/>
+        <Rectangle Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="160" Margin="345,34,0,0" Stroke="Black" VerticalAlignment="Top" Width="80"/>
+        <Label Content="T400 pinnankorkeus" HorizontalAlignment="Left" Height="30" Margin="321,199,0,0" VerticalAlignment="Top" Width="129"/>
+        <Rectangle Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="160" Margin="497,34,0,0" Stroke="Black" VerticalAlignment="Top" Width="80"/>
+        <Label Content="T300 paine" HorizontalAlignment="Left" Height="30" Margin="473,199,0,0" VerticalAlignment="Top" Width="129"/>
+        <Rectangle Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="160" Margin="657,34,0,0" Stroke="Black" VerticalAlignment="Top" Width="80"/>
+        <Label Content="T300 lämpötila" HorizontalAlignment="Left" Height="30" Margin="633,199,0,0" VerticalAlignment="Top" Width="129"/>
 
     </Grid>
 </Window>
