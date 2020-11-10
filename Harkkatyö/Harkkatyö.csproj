@@ -46,6 +46,15 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="Tuni.MppOpcUaClientLib">
+      <HintPath>..\MppOpcUaClientLib_dll\Tuni.MppOpcUaClientLib.dll</HintPath>
+    </Reference>
+    <Reference Include="UnifiedAutomation.UaBase">
+      <HintPath>..\MppOpcUaClientLib_dll\UnifiedAutomation.UaBase.dll</HintPath>
+    </Reference>
+    <Reference Include="UnifiedAutomation.UaClient">
+      <HintPath>..\MppOpcUaClientLib_dll\UnifiedAutomation.UaClient.dll</HintPath>
+    </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
