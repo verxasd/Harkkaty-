@@ -22,6 +22,11 @@ namespace Harkkatyö
             asiakas.SetOnOffItem(nimi, totuus);
         }
 
+        public void ClientInit() 
+        {
+            asiakas.Init();
+        }
+
         // Säiliöiden pinnankorkeudet
         private int LI200;
         

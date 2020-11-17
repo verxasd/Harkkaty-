@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Harkkatyö
 {
-    class Mittaus
+    interface Mittaus
     {
+        //public double palautaDouble(string nimi);
     }
 }

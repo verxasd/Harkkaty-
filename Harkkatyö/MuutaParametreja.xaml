@@ -7,8 +7,8 @@
         mc:Ignorable="d"
         Title="Muuta parametreja" Height="450" Width="800">
     <Grid>
-        <TextBox HorizontalAlignment="Left" Height="23" Margin="123,72,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
-        <TextBox HorizontalAlignment="Left" Height="23" Margin="123,44,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
+        <TextBox HorizontalAlignment="Left" Height="23" Margin="123,72,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+        <TextBox HorizontalAlignment="Left" Height="23" Margin="123,44,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" TextChanged="TextBox_TextChanged"/>
         <Label Content="Nykyinen arvo" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top"/>
         <Label Content="Uusi arvo" HorizontalAlignment="Left" Margin="10,77,0,0" VerticalAlignment="Top"/>
         <Label Content="Keittoaika" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>

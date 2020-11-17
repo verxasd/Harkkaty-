@@ -12,36 +12,43 @@ namespace Harkkatyö
     class Toimintalogiikka
     {
         private Prosessi prosessi = new Prosessi();
+        private bool clientStatus = false;
 
         public void kaynnistaSekvenssi()
         {
-        //    prosessi.muutaOnOff("E100", false);
+            if(!clientStatus)
+            {
+                prosessi.ClientInit();
+                clientStatus = true;
+            }
+            
+            prosessi.muutaOnOff("E100", true);
             
         }
         public void pysaytaSekvenssi() 
         {
-            
+            prosessi.muutaOnOff("E100", false);
         }
-        public void muutaParametreja(int keittoaika, int keittolampotila, int kyllastysaika, int kyllastyspaine)
+        public void muutaParametreja(double keittoaika, double keittolampotila, double kyllastysaika, int keittopaine)
         {
             this.keittoaika = keittoaika;
             this.keittolampotila = keittolampotila;
             this.kyllastysaika = kyllastysaika;
-            this.kyllastyspaine = kyllastyspaine;
+            this.keittopaine = keittopaine;
         }
 
-        public int T100pinta;
-        public int T200pinta;
-        public int T400pinta;
-        public int T300paine;
-        public int T300lampotila;
+        public double T100pinta;
+        public double T200pinta;
+        public double T400pinta;
+        public double T300paine;
+        public double T300lampotila;
 
         public bool tila;
 
-        private int keittoaika;
-        private int keittolampotila;
-        private int kyllastysaika;
-        private int kyllastyspaine;
+        private double keittoaika;
+        private double keittolampotila;
+        private double kyllastysaika;
+        private int keittopaine;
 
         
 

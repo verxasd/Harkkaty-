@@ -28,25 +28,44 @@ namespace Harkkatyö
             InitializeComponent();
         }
 
+        
         private Toimintalogiikka logiikka = new Toimintalogiikka();
 
-        private int keittoaika = 0;
-        private int keittolampotila = 0;
-        private int keittopaine = 0;
-        private int kyllastysaika = 0;
+        private bool kaynnissa = false;
+
+        public static double keittoaika;
+        public static double keittolampotila;
+        public static int keittopaine;
+        public static double kyllastysaika;
+
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            logiikka.kaynnistaSekvenssi();
+            if (!kaynnissa) 
+            {
+                logiikka.muutaParametreja(keittoaika, keittolampotila, kyllastysaika, keittopaine);
+                logiikka.kaynnistaSekvenssi();
+                kaynnissa = true;
+            }
+            
         }
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            MuutaParametreja muutos = new MuutaParametreja();
-            muutos.Show();
+            if (!kaynnissa) 
+            {
+                MuutaParametreja muutos = new MuutaParametreja();
+                muutos.Show();
+            }
+            
         }
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
-            logiikka.pysaytaSekvenssi();
+            if (kaynnissa) 
+            {
+                logiikka.pysaytaSekvenssi();
+                kaynnissa = false;
+            }
+            
         }
     }
 }
