@@ -5,17 +5,22 @@ using System.Text;
 using System.Threading.Tasks;
 using UnifiedAutomation.UaBase;
 using UnifiedAutomation.UaClient;
+using Tuni.MppOpcUaClientLib;
+
 
 namespace Harkkatyö
-{
+{ 
     class Prosessi
     {
-        /* Sekalaista yritystä saada yhteys ohjelman ja simulaattorin välille
-         * 
-         * var client = new UnifiedAutomation.UaClient.("opc.tcp://127.0.0.1:8087")
-        {
+        
+        static private ConnectionParamsHolder parametrit = new ConnectionParamsHolder("opc.tcp://127.0.0.1:8087");
 
-        }*/
+        private MppClient asiakas = new MppClient(parametrit);
+
+        public void muutaOnOff(string nimi, bool totuus) 
+        {
+            asiakas.SetOnOffItem(nimi, totuus);
+        }
 
         // Säiliöiden pinnankorkeudet
         private int LI200;
@@ -58,4 +63,6 @@ namespace Harkkatyö
         private bool V404;
 
     }
+    
+    
 }

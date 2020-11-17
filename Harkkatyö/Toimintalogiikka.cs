@@ -3,14 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnifiedAutomation.UaBase;
+using UnifiedAutomation.UaClient;
+using Tuni.MppOpcUaClientLib;
 
 namespace Harkkatyö
 {
     class Toimintalogiikka
     {
+        private Prosessi prosessi = new Prosessi();
+
         public void kaynnistaSekvenssi()
         {
-
+        //    prosessi.muutaOnOff("E100", false);
+            
         }
         public void pysaytaSekvenssi() 
         {
@@ -36,6 +42,8 @@ namespace Harkkatyö
         private int keittolampotila;
         private int kyllastysaika;
         private int kyllastyspaine;
+
+        
 
         
 
