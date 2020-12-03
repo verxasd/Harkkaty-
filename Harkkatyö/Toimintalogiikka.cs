@@ -21,7 +21,7 @@ namespace Harkkatyö
         private Prosessi prosessi = new Prosessi();
         private bool clientStatus = false;
 
-        
+        private bool kaynnistetty = false;
 
         public void kaynnistaSekvenssi()
         {
@@ -31,8 +31,13 @@ namespace Harkkatyö
                 clientStatus = true;
             }
 
-            Thread thread2 = new Thread(ProsessiKaynnissa);
-            thread2.Start();
+            if (!kaynnistetty) 
+            {
+                Thread thread2 = new Thread(ProsessiKaynnissa);
+                thread2.Start();
+                kaynnistetty = true;
+            }
+            
             
             prosessi.MuutaOnOff("E100", true);          
         }
