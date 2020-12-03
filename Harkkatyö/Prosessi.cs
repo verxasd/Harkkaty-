@@ -8,18 +8,32 @@ using UnifiedAutomation.UaClient;
 using Tuni.MppOpcUaClientLib;
 using System.Windows.Documents;
 using System.Windows;
+using System.Diagnostics;
+using static Tuni.MppOpcUaClientLib.MppClient;
+using Harkkatyö;
+using System.Threading;
+
+// public delegate void ProcessItemsChangedEventHandler(object source, ProcessItemChangedEventArgs args);
+//public delegate void OmaEventHandlerInt(object source, MuuttuneetEventInt m);
+//public delegate void OmaEventHandlerDouble(object source, MuuttuneetEventDouble m);
+// public delegate void OmaEventHandlerBool(object source, MuuttuneetEventBool m);
 
 namespace Harkkatyö
 {
-    delegate void ProcessItemsChangedEventHandler(object source, ProcessItemChangedEventArgs args);
+
     class Prosessi
     {
-
         static private ConnectionParamsHolder parametrit = new ConnectionParamsHolder("opc.tcp://127.0.0.1:8087");
 
         private MppClient asiakas = new MppClient(parametrit);
 
-        public event ProcessItemsChangedEventHandler jokinMuuttui;
+        // public event ProcessItemsChangedEventHandler JokinMuuttui;
+
+        // Lisätään omat event handlerit eri tietotyypeille
+        public event OmaEventHandlerInt MikaMuuttuiInt;
+        public event OmaEventHandlerDouble MikaMuuttuiDouble;
+        public event OmaEventHandlerBool MikaMuuttuiBool;
+
 
         public void MuutaOnOff(string nimi, bool totuus)
         {
@@ -36,49 +50,211 @@ namespace Harkkatyö
 
         public void ClientInit()
         {
+            // Initoidaan client, jonka jälkeen lisätään seurattavat arvot serverin tietoon ja tilataan event ja määritellään event handler
             asiakas.Init();
             AddSubscriptions();
+            Thread thread1 = new Thread(MuutaThread);
+            thread1.Start();
+
         }
+        private void MuutaThread()
+        {
+            asiakas.ProcessItemsChanged += new ProcessItemsChangedEventHandler(MuutaMuuttuneet);
+            Thread.Sleep(500);
+        }
+        /*
+        public int PalautaInt(string nimi)
+        {
+            int arvo = mitattavatInt[nimi];
+            return arvo;
+        }
+        public bool PalautaBool(string nimi)
+        {
+            bool arvo = mitattavatBool[nimi];
+            return arvo;
+        }
+        public double PalautaDouble(string nimi)
+        {
+            double arvo = mitattavatDouble[nimi];
+            return arvo;
+        }
+        */
+
+        // Event sille, jos intit muuttuvat
+        public Dictionary<string, int> OmaEventInt
+        {
+            set 
+            {
+                Dictionary<string, int> MuuttuneetInt = new Dictionary<string, int> { };
+                foreach (string avain in mitattavatInt.Keys) 
+                {
+                    if (mitattavatIntVanha.ContainsKey(avain))
+                    {
+                        if (!mitattavatInt[avain].Equals(mitattavatIntVanha[avain]))
+                        {
+                            MuuttuneetInt.Add(avain, mitattavatInt[avain]);
+                        }
+                    }
+                    else
+                    {
+                        MuuttuneetInt.Add(avain, mitattavatInt[avain]);
+                    }
+                }
+                if (MuuttuneetInt.Count > 0) 
+                {
+                    MikaMuuttuiInt(this, new MuuttuneetEventInt(MuuttuneetInt));
+                }
+            }
+            
+        }
+        // Event sille, jos doublet muuttuvat
+        
+        public Dictionary<string, double> OmaEventDouble
+        {            
+            set
+            {                
+                Dictionary<string, double> MuuttuneetDouble = new Dictionary<string, double> { };
+                foreach (string avain in mitattavatDouble.Keys)
+                {
+                    if (mitattavatDoubleVanha.ContainsKey(avain))
+                    {
+                        if (!mitattavatDouble[avain].Equals(mitattavatDoubleVanha[avain]))
+                        {
+                            MuuttuneetDouble.Add(avain, mitattavatDouble[avain]);
+                        }
+                    }
+                    else 
+                    {
+                        MuuttuneetDouble.Add(avain, mitattavatDouble[avain]);
+                    }                 
+                }
+                if (MuuttuneetDouble.Count > 0)
+                {
+                    MikaMuuttuiDouble(this, new MuuttuneetEventDouble(MuuttuneetDouble));
+                }
+            }
+
+        }
+        // Event sille, jos boolit muuttuvat
+        public Dictionary<string, bool> OmaEventBool
+        {
+            set
+            {
+                Dictionary<string, bool> MuuttuneetBool = new Dictionary<string, bool> { };
+                foreach (string avain in mitattavatBool.Keys)
+                {
+                    if (mitattavatBoolVanha.ContainsKey(avain))
+                    {
+                        if (!mitattavatBool[avain].Equals(mitattavatBoolVanha[avain]))
+                        {
+                            MuuttuneetBool.Add(avain, mitattavatBool[avain]);
+                        }
+                    }
+                    else
+                    {
+                        MuuttuneetBool.Add(avain, mitattavatBool[avain]);
+                    }
+                }
+                if (MuuttuneetBool.Count > 0)
+                {
+                    MikaMuuttuiBool(this, new MuuttuneetEventBool(MuuttuneetBool));
+                }
+            }
+
+        }
+
+
+
+
+
         private void AddSubscriptions()
         {
-            // Vaihtoehdot subscriptioneiden lisäämiseen, kumpi onkaan oikea vaihtoehto
-
-            //sasiakas.AddToSubscription("jokinMuuttui");
+            // Lisätään mitattavien asioiden subscriptionit
             
-            /*
-            foreach (string element in mitattavatBool.Keys)
-            {
-                asiakas.AddToSubscription(element);
-            }
-            foreach (string element in mitattavatDouble.Keys)
-            {
-                asiakas.AddToSubscription(element);
-            }
-            foreach (string element in mitattavatInt.Keys)
-            {
-                asiakas.AddToSubscription(element);
-            }*/
+            // Mitattavat doublet
+            asiakas.AddToSubscription("TI100");
+            asiakas.AddToSubscription("TI300");
+            asiakas.AddToSubscription("FI100");
+
+            // Mitattavat booleanit
+            asiakas.AddToSubscription("LA+100");
+            asiakas.AddToSubscription("LS-200");
+            asiakas.AddToSubscription("LS-300");
+            asiakas.AddToSubscription("LS+300");
+
+            // Mitattavat intit
+            asiakas.AddToSubscription("LI100");
+            asiakas.AddToSubscription("LI200");
+            asiakas.AddToSubscription("LI400");
+            asiakas.AddToSubscription("PI300");
+
+            // Tilataan event käytettävälle event handlerille
+            // asiakas.ProcessItemsChanged += JokinMuuttui;
+
         }
+
         private void MuutaMuuttuneet(object source, ProcessItemChangedEventArgs args)
         {
+            // Metodi, jota event handler kutsuu kun event nousee
+            // Metodilla muutetaan dicteihin päivitetyt arvot
             Dictionary<string, MppValue> kaikkiMuuttuneet = args.ChangedItems;
+
             foreach (string itemName in kaikkiMuuttuneet.Keys)
             {
                 MppValue item = kaikkiMuuttuneet[itemName];
 
-                if ((int)item.ValueType == 0)
+                if (item.ValueType == MppValue.ValueTypeType.Bool)
                 {
                     bool arvo = (bool)item.GetValue();
+                    if (mitattavatBoolVanha.ContainsKey(itemName))
+                    {
+                        mitattavatBoolVanha[itemName] = mitattavatBool[itemName];
+                    }
+                    else 
+                    {
+                        mitattavatBoolVanha.Add(itemName, mitattavatBool[itemName]);
+                    }
+                    // mitattavatBoolVanha = mitattavatBool;
+                    mitattavatBool[itemName] = arvo;
                 }
-                if ((int)item.ValueType == 1)
+                if (item.ValueType == MppValue.ValueTypeType.Double)
                 {
                     double arvo = (double)item.GetValue();
+
+                    if (mitattavatDoubleVanha.ContainsKey(itemName))
+                    {
+                        mitattavatDoubleVanha[itemName] = mitattavatDouble[itemName];
+                    }
+                    else
+                    {
+                        mitattavatDoubleVanha.Add(itemName, mitattavatDouble[itemName]);
+                    }
+
+                    // mitattavatDoubleVanha = mitattavatDouble;
+                    mitattavatDouble[itemName] = arvo;
+
+                    // Kirjotoitetaan double outputiin, tällä hetkellä mukana vain testaustarkoituksessa
+                    // Trace.WriteLine( "uusi " + mitattavatDouble["TI100"].ToString() + " vanha " + mitattavatDoubleVanha["TI100"].ToString());
+                    
                 }
-                if ((int)item.ValueType == 2)
+                if (item.ValueType == MppValue.ValueTypeType.Int)
                 {
                     int arvo = (int)item.GetValue();
+
+                    if (mitattavatIntVanha.ContainsKey(itemName))
+                    {
+                        mitattavatIntVanha[itemName] = mitattavatInt[itemName];
+                    }
+                    else
+                    {
+                        mitattavatIntVanha.Add(itemName, mitattavatInt[itemName]);
+                    }
+
+                    // mitattavatIntVanha = mitattavatInt;
+                    mitattavatInt[itemName] = arvo;
                 }
             }
+            Thread.Sleep(500);
         }
         /*
         // Säiliöiden pinnankorkeudet
@@ -113,23 +289,31 @@ namespace Harkkatyö
         */
 
         // Dictit, joissa on eri tyyppiset mitattavat arvot
+
+        private Dictionary<string, bool> mitattavatBoolVanha = new Dictionary<string, bool>() { };
+
         private Dictionary<string, bool> mitattavatBool = new Dictionary<string, bool>() {
-            { "LS-200", false },
-            { "LS-300", false },
-            { "LS+400", false}
+            { "LA+100", true },
+            { "LS-200", true },
+            { "LS-300", true },
+            { "LS+300", false }
         };
+
+        private Dictionary<string, int> mitattavatIntVanha = new Dictionary<string, int>() { };
 
         private Dictionary<string, int> mitattavatInt = new Dictionary<string, int>() {
-            { "LI100", 0},
-            { "LI200", 0},
-            { "LI400", 0},
-            { "TI100", 0},
-            { "TI300", 0},
-            { "PI300", 0}
+            { "LI100", 216 },
+            { "LI200", 90 },
+            { "LI400", 90 },
+            { "PI300", 0 }
         };
 
+        private Dictionary<string, double> mitattavatDoubleVanha = new Dictionary<string, double>() { };
+
         private Dictionary<string, double> mitattavatDouble = new Dictionary<string, double>() {
-            { "FI100", 0}
+            { "TI100", 20 },
+            { "TI300", 20 },
+            { "FI100", 0 }
         };
 
         /*
@@ -158,6 +342,4 @@ namespace Harkkatyö
         */
 
     }
-
-
 }
