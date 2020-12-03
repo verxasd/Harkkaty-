@@ -37,6 +37,15 @@ namespace Harkkatyö
         {
 
         }
+        private void Button_Click_4(object sender, RoutedEventArgs e)
+        {
+
+        }
+        private void Button_Click_5(object sender, RoutedEventArgs e)
+        {
+
+        }
+
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
