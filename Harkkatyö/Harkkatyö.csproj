@@ -68,6 +68,7 @@
     <Compile Include="MuutaParametreja.xaml.cs">
       <DependentUpon>MuutaParametreja.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MuuttuneetEvent.cs" />
     <Compile Include="MuuttuneetEventBool.cs" />
     <Compile Include="MuuttuneetEventDouble.cs" />
     <Compile Include="MuuttuneetEventInt.cs" />

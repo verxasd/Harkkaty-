@@ -21,18 +21,20 @@ using System.Threading;
 namespace Harkkatyö
 {
 
-    class Prosessi
+    class Prosessi : Mittaus
     {
         static private ConnectionParamsHolder parametrit = new ConnectionParamsHolder("opc.tcp://127.0.0.1:8087");
 
         private MppClient asiakas = new MppClient(parametrit);
 
         // public event ProcessItemsChangedEventHandler JokinMuuttui;
-
+        /*
         // Lisätään omat event handlerit eri tietotyypeille
         public event OmaEventHandlerInt MikaMuuttuiInt;
         public event OmaEventHandlerDouble MikaMuuttuiDouble;
         public event OmaEventHandlerBool MikaMuuttuiBool;
+        */
+        public event OmaEventHandler MikaMuuttui;
 
 
         public void MuutaOnOff(string nimi, bool totuus)
@@ -60,9 +62,10 @@ namespace Harkkatyö
         private void MuutaThread()
         {
             asiakas.ProcessItemsChanged += new ProcessItemsChangedEventHandler(MuutaMuuttuneet);
-            Thread.Sleep(500);
+            // Thread.Sleep(500);
         }
-        /*
+        
+        // Metodit Intien, boolien ja doublejen palauttamiseen
         public int PalautaInt(string nimi)
         {
             int arvo = mitattavatInt[nimi];
@@ -78,10 +81,10 @@ namespace Harkkatyö
             double arvo = mitattavatDouble[nimi];
             return arvo;
         }
-        */
+        
 
         // Event sille, jos intit muuttuvat
-        public void OmaEventInt()
+        /*public void OmaEventInt()
         {
             
             Dictionary<string, int> MuuttuneetInt = new Dictionary<string, int> { };
@@ -158,9 +161,58 @@ namespace Harkkatyö
             }
             
 
+        }*/
+
+        public void OmaEvent()
+        {
+            Dictionary<string, int> Muuttuneet = new Dictionary<string, int> { };
+            foreach (string avain in mitattavatBool.Keys)
+            {
+                if (mitattavatBoolVanha.ContainsKey(avain))
+                {
+                    if (!mitattavatBool[avain].Equals(mitattavatBoolVanha[avain]))
+                    {
+                        Muuttuneet.Add(avain, 0);
+                    }
+                }
+                else
+                {
+                    Muuttuneet.Add(avain, 0);
+                }
+            }
+            foreach (string avain in mitattavatDouble.Keys)
+            {
+                if (mitattavatDoubleVanha.ContainsKey(avain))
+                {
+                    if (!mitattavatDouble[avain].Equals(mitattavatDoubleVanha[avain]))
+                    {
+                        Muuttuneet.Add(avain, 1);
+                    }
+                }
+                else
+                {
+                    Muuttuneet.Add(avain, 1);
+                }
+            }
+            foreach (string avain in mitattavatInt.Keys)
+            {
+                if (mitattavatIntVanha.ContainsKey(avain))
+                {
+                    if (!mitattavatInt[avain].Equals(mitattavatIntVanha[avain]))
+                    {
+                        Muuttuneet.Add(avain, 2);
+                    }
+                }
+                else
+                {
+                    Muuttuneet.Add(avain, 2);
+                }
+            }
+            if (Muuttuneet.Count > 0)
+            {
+                MikaMuuttui(this, new MuuttuneetEvent(Muuttuneet));
+            }
         }
-
-
 
 
 
@@ -251,6 +303,14 @@ namespace Harkkatyö
                     mitattavatInt[itemName] = arvo;
                 }
             }
+            /*
+            OmaEventBool();
+            OmaEventDouble();
+            OmaEventInt();
+            */
+
+            OmaEvent();
+
             Thread.Sleep(500);
         }
         /*

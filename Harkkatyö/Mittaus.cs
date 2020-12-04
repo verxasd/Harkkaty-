@@ -8,6 +8,6 @@ namespace Harkkatyö
 {
     interface Mittaus
     {
-        //public double palautaDouble(string nimi);
+        double PalautaDouble(string nimi);
     }
 }

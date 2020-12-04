@@ -15,6 +15,7 @@ namespace Harkkatyö
     public delegate void OmaEventHandlerDouble(object source, MuuttuneetEventDouble m);
     public delegate void OmaEventHandlerBool(object source, MuuttuneetEventBool m);
 
+    public delegate void OmaEventHandler(object source, MuuttuneetEvent m);
 
     class Toimintalogiikka
     {
@@ -23,42 +24,78 @@ namespace Harkkatyö
 
         private bool kaynnistetty = false;
 
-        public void kaynnistaSekvenssi()
+        public void AlustaProsessi()
         {
-            if(!clientStatus)
+            if (!clientStatus)
             {
                 prosessi.ClientInit();
                 clientStatus = true;
             }
 
-            if (!kaynnistetty) 
+            if (!kaynnistetty)
             {
                 Thread thread2 = new Thread(ProsessiKaynnissa);
                 thread2.Start();
                 kaynnistetty = true;
             }
-            
-            
+        }
+        
+        public void kaynnistaSekvenssi()
+        {                       
             prosessi.MuutaOnOff("E100", true);          
         }
 
         private void ProsessiKaynnissa() 
         {
+            /*
             prosessi.MikaMuuttuiInt += new OmaEventHandlerInt(PaivitaArvotInt);
             prosessi.MikaMuuttuiDouble += new OmaEventHandlerDouble(PaivitaArvotDouble);
             prosessi.MikaMuuttuiBool += new OmaEventHandlerBool(PaivitaArvotBool);
+            */
 
-            while (true) 
+            prosessi.MikaMuuttui += new OmaEventHandler(PaivitaArvot);
+
+            /*while (true) 
             {             
                 prosessi.OmaEventDouble();
                 prosessi.OmaEventInt();
                 prosessi.OmaEventBool();
 
                 Thread.Sleep(500);
-            }
-            
+            }*/
+
         }
 
+        private void PaivitaArvot(object source, MuuttuneetEvent m)
+        {
+            DateTime time = DateTime.Now;
+            Trace.WriteLine("aika: " + time.ToString("HH: mm:ss.fff") + " toimintalogiikka sai tiedon muutoksista");
+            /*
+            Trace.WriteLine(prosessi.PalautaDouble("TI100"));
+            //throw new NotImplementedException();
+            */
+            Dictionary<string, int> muuttuneet = m.PalautaArvot();
+            foreach (string avain in muuttuneet.Keys)
+            {
+                if (muuttuneet[avain] == 0) 
+                {
+                    mitattavatBool[avain] = prosessi.PalautaBool(avain);
+                    Trace.WriteLine(avain.ToString() + " " + mitattavatBool[avain].ToString());
+                }
+                if (muuttuneet[avain] == 1)
+                {
+                    mitattavatDouble[avain] = prosessi.PalautaDouble(avain);
+                    Trace.WriteLine(avain.ToString() + " " + mitattavatDouble[avain].ToString());
+                }
+                if (muuttuneet[avain] == 2)
+                {
+                    mitattavatInt[avain] = prosessi.PalautaInt(avain);
+                    Trace.WriteLine(avain.ToString() + " " + mitattavatInt[avain].ToString());
+                }
+            }
+        }
+
+        /*
         private void PaivitaArvotDouble(object source, MuuttuneetEventDouble m)
         {
             DateTime time = DateTime.Now;
@@ -75,6 +112,11 @@ namespace Harkkatyö
         static void PaivitaArvotBool(object source, MuuttuneetEventBool m)
         {
             Trace.WriteLine("päivitetään boolit eventistä");
+            Dictionary<string, bool> muuttuneet = m.PalautaArvot();
+            foreach (string avain in muuttuneet.Keys)
+            {
+                Trace.WriteLine(avain.ToString() + " " + muuttuneet[avain].ToString());
+            }
             //throw new NotImplementedException();
         }
 
@@ -83,6 +125,7 @@ namespace Harkkatyö
             Trace.WriteLine("päivitetään intit eventistä");
             //throw new NotImplementedException();
         }
+        */
 
         public void pysaytaSekvenssi() 
         {
@@ -95,14 +138,28 @@ namespace Harkkatyö
             this.kyllastysaika = kyllastysaika;
             this.keittopaine = keittopaine;
         }
-
-        public double T100pinta;
-        public double T200pinta;
-        public double T400pinta;
-        public double T300paine;
-        public double T300lampotila;
-
+                
         public bool tila;
+
+        private Dictionary<string, bool> mitattavatBool = new Dictionary<string, bool>() {
+            { "LA+100", true },
+            { "LS-200", true },
+            { "LS-300", true },
+            { "LS+300", false }
+        };
+
+        private Dictionary<string, int> mitattavatInt = new Dictionary<string, int>() {
+            { "LI100", 216 },
+            { "LI200", 90 },
+            { "LI400", 90 },
+            { "PI300", 0 }
+        };
+     
+        private Dictionary<string, double> mitattavatDouble = new Dictionary<string, double>() {
+            { "TI100", 20 },
+            { "TI300", 20 },
+            { "FI100", 0 }
+        };
 
         private double keittoaika;
         private double keittolampotila;
