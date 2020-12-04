@@ -50,9 +50,9 @@ namespace Harkkatyö
 
             while (true) 
             {             
-                prosessi.OmaEventDouble = new Dictionary<string, double>() { };
-                prosessi.OmaEventInt = new Dictionary<string, int>() { };
-                prosessi.OmaEventBool = new Dictionary<string, bool>() { };
+                prosessi.OmaEventDouble();
+                prosessi.OmaEventInt();
+                prosessi.OmaEventBool();
 
                 Thread.Sleep(500);
             }

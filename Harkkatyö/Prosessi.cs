@@ -81,85 +81,82 @@ namespace Harkkatyö
         */
 
         // Event sille, jos intit muuttuvat
-        public Dictionary<string, int> OmaEventInt
+        public void OmaEventInt()
         {
-            set 
+            
+            Dictionary<string, int> MuuttuneetInt = new Dictionary<string, int> { };
+            foreach (string avain in mitattavatInt.Keys) 
             {
-                Dictionary<string, int> MuuttuneetInt = new Dictionary<string, int> { };
-                foreach (string avain in mitattavatInt.Keys) 
+                if (mitattavatIntVanha.ContainsKey(avain))
                 {
-                    if (mitattavatIntVanha.ContainsKey(avain))
-                    {
-                        if (!mitattavatInt[avain].Equals(mitattavatIntVanha[avain]))
-                        {
-                            MuuttuneetInt.Add(avain, mitattavatInt[avain]);
-                        }
-                    }
-                    else
+                    if (!mitattavatInt[avain].Equals(mitattavatIntVanha[avain]))
                     {
                         MuuttuneetInt.Add(avain, mitattavatInt[avain]);
                     }
                 }
-                if (MuuttuneetInt.Count > 0) 
+                else
                 {
-                    MikaMuuttuiInt(this, new MuuttuneetEventInt(MuuttuneetInt));
+                    MuuttuneetInt.Add(avain, mitattavatInt[avain]);
                 }
             }
+            if (MuuttuneetInt.Count > 0) 
+            {
+                MikaMuuttuiInt(this, new MuuttuneetEventInt(MuuttuneetInt));
+            }
+            
             
         }
         // Event sille, jos doublet muuttuvat
         
-        public Dictionary<string, double> OmaEventDouble
+        public void OmaEventDouble()
         {            
-            set
-            {                
-                Dictionary<string, double> MuuttuneetDouble = new Dictionary<string, double> { };
-                foreach (string avain in mitattavatDouble.Keys)
+                          
+            Dictionary<string, double> MuuttuneetDouble = new Dictionary<string, double> { };
+            foreach (string avain in mitattavatDouble.Keys)
+            {
+                if (mitattavatDoubleVanha.ContainsKey(avain))
                 {
-                    if (mitattavatDoubleVanha.ContainsKey(avain))
-                    {
-                        if (!mitattavatDouble[avain].Equals(mitattavatDoubleVanha[avain]))
-                        {
-                            MuuttuneetDouble.Add(avain, mitattavatDouble[avain]);
-                        }
-                    }
-                    else 
+                    if (!mitattavatDouble[avain].Equals(mitattavatDoubleVanha[avain]))
                     {
                         MuuttuneetDouble.Add(avain, mitattavatDouble[avain]);
-                    }                 
+                    }
                 }
-                if (MuuttuneetDouble.Count > 0)
+                else 
                 {
-                    MikaMuuttuiDouble(this, new MuuttuneetEventDouble(MuuttuneetDouble));
-                }
+                    MuuttuneetDouble.Add(avain, mitattavatDouble[avain]);
+                }                 
             }
+            if (MuuttuneetDouble.Count > 0)
+            {
+                MikaMuuttuiDouble(this, new MuuttuneetEventDouble(MuuttuneetDouble));
+            }
+            
 
         }
         // Event sille, jos boolit muuttuvat
-        public Dictionary<string, bool> OmaEventBool
+        public void OmaEventBool()
         {
-            set
+            
+            Dictionary<string, bool> MuuttuneetBool = new Dictionary<string, bool> { };
+            foreach (string avain in mitattavatBool.Keys)
             {
-                Dictionary<string, bool> MuuttuneetBool = new Dictionary<string, bool> { };
-                foreach (string avain in mitattavatBool.Keys)
+                if (mitattavatBoolVanha.ContainsKey(avain))
                 {
-                    if (mitattavatBoolVanha.ContainsKey(avain))
-                    {
-                        if (!mitattavatBool[avain].Equals(mitattavatBoolVanha[avain]))
-                        {
-                            MuuttuneetBool.Add(avain, mitattavatBool[avain]);
-                        }
-                    }
-                    else
+                    if (!mitattavatBool[avain].Equals(mitattavatBoolVanha[avain]))
                     {
                         MuuttuneetBool.Add(avain, mitattavatBool[avain]);
                     }
                 }
-                if (MuuttuneetBool.Count > 0)
+                else
                 {
-                    MikaMuuttuiBool(this, new MuuttuneetEventBool(MuuttuneetBool));
+                    MuuttuneetBool.Add(avain, mitattavatBool[avain]);
                 }
             }
+            if (MuuttuneetBool.Count > 0)
+            {
+                MikaMuuttuiBool(this, new MuuttuneetEventBool(MuuttuneetBool));
+            }
+            
 
         }
 
