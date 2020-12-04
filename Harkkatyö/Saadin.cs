@@ -24,12 +24,12 @@ namespace Harkkatyö
             asetusArvo = 0;
             mitattuArvo = 0;    
         }
+        public void MuutaAsetusarvo(double asetusarvo)
+        {
 
-        public void muutaAsetusarvo(double asetusarvo) { }
-
-        public void muutaMitattuArvo(double mitattuArvo) { }
-
-        public void muutaOhjaus() 
+        }
+        public void MuutaMitattuArvo(double mitattuArvo) { }
+        public int PalautaOhjaus()
         {
             double erosuure = asetusArvo - mitattuArvo;
             ohjaus = Convert.ToInt32(erosuure * gain);
@@ -38,7 +38,6 @@ namespace Harkkatyö
             {
                 ohjaus = 100;
             }
-
             if (ohjaus < 0)
             {
                 ohjaus = 0;
@@ -54,6 +53,7 @@ namespace Harkkatyö
                     ohjaus = 0;
                 }
             }
+            return ohjaus;
         }
 
     }
