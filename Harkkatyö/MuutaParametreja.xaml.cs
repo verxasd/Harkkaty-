@@ -30,20 +30,20 @@ namespace Harkkatyö
         private int tempKeittopaine = MainWindow.keittopaine;
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-
+            //tempKeittopaine
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-
+            //tempKeittoaika
         }
         private void Button_Click_4(object sender, RoutedEventArgs e)
         {
-
+            //tempKyllastysaika
         }
         private void Button_Click_5(object sender, RoutedEventArgs e)
         {
-
+            //tempKeittolampotila
         }
 
 

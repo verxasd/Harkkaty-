@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Harkkatyö"
         mc:Ignorable="d"
-        Title="Muuta parametreja" Height="450" Width="800">
+        Title="Muuta parametreja" Height="475" Width="750">
     <Grid>
         <TextBox HorizontalAlignment="Left" Height="23" Margin="123,72,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
         <TextBox HorizontalAlignment="Left" Height="23" Margin="123,44,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" TextChanged="TextBox_TextChanged"/>
@@ -31,8 +31,8 @@
         <Button Content="Käytä" HorizontalAlignment="Left" Margin="123,244,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click"/>
         <Button Content="Käytä" HorizontalAlignment="Left" Margin="519,100,0,0" VerticalAlignment="Top" Width="75"/>
         <Button Content="Käytä" HorizontalAlignment="Left" Margin="519,244,0,0" VerticalAlignment="Top" Width="75"/>
-        <Button Content="Peruuta" HorizontalAlignment="Left" Margin="707,389,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_3"/>
-        <Button Content="OK" HorizontalAlignment="Left" Margin="627,389,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_2"/>
+        <Button Content="Peruuta" HorizontalAlignment="Left" Margin="350,389,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_3"/>
+        <Button Content="OK" HorizontalAlignment="Left" Margin="250,389,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_2"/>
 
     </Grid>
 </Window>
