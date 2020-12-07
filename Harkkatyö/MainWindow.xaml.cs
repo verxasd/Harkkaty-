@@ -26,6 +26,7 @@ namespace Harkkatyö
         public MainWindow()
         {
             InitializeComponent();
+            logiikka.AlustaProsessi();
         }
 
         
