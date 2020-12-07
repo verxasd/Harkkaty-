@@ -13,23 +13,34 @@ namespace Harkkatyö
 
         private int ohjaus;
 
-        private string nimi;
         private bool tyyppi;
         private double gain;
 
-        public Saadin(string name, bool onOff, double gain) 
+        public Saadin(bool onOff, double gainAsetus) 
         {
-            nimi = name;
             tyyppi = onOff;
             asetusArvo = 0;
-            mitattuArvo = 0;    
+            mitattuArvo = 0;
+            gain = gainAsetus;
         }
-        public void MuutaAsetusarvo(double asetusarvo)
+        public int PalautaOhjaus(double asetusarvo, double mittaus)
         {
-
+            MuutaMitattuArvo(mittaus);
+            MuutaAsetusarvo(asetusarvo);
+            int ohjaus = LaskeOhjaus();
+            return ohjaus;
         }
-        public void MuutaMitattuArvo(double mitattuArvo) { }
-        public int PalautaOhjaus()
+        private void MuutaMitattuArvo(double mittaus)
+        {
+            mitattuArvo = mittaus;
+        }
+        private void MuutaAsetusarvo(double asetusarvo)
+        {
+            asetusArvo = asetusarvo;
+        }
+        
+        // Lasketaan ohjaus yksinkertaisella P-säätimellä. Jos ohjattava laite hyväksyy ohjauksena vain 0 tai 100, muutetaan ohjaus hyväksyttyyn muotoon
+        private int LaskeOhjaus()
         {
             double erosuure = asetusArvo - mitattuArvo;
             ohjaus = Convert.ToInt32(erosuure * gain);
@@ -44,7 +55,7 @@ namespace Harkkatyö
             }
             if (tyyppi)
             {
-                if (ohjaus > 50)
+                if (ohjaus > 0)
                 {
                     ohjaus = 100;
                 }

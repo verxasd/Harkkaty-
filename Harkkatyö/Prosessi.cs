@@ -211,6 +211,7 @@ namespace Harkkatyö
             if (Muuttuneet.Count > 0)
             {
                 MikaMuuttui(this, new MuuttuneetEvent(Muuttuneet));
+                Muuttuneet.Clear();
             }
         }
 

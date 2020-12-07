@@ -9,5 +9,7 @@ namespace Harkkatyö
     interface Mittaus
     {
         double PalautaDouble(string nimi);
+        int PalautaInt(string nimi);
+        bool PalautaBool(string nimi);
     }
 }
