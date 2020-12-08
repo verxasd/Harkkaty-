@@ -11,12 +11,6 @@ using System.Threading;
 
 namespace Harkkatyö
 {
-    // Event handlerit, jotka ovat vanhan toteutuksen peruja. Poistettava nykytiedon valossa viimeistään ennen lopullista palautusta.
-    /*
-    public delegate void OmaEventHandlerInt(object source, MuuttuneetEventInt m);
-    public delegate void OmaEventHandlerDouble(object source, MuuttuneetEventDouble m);
-    public delegate void OmaEventHandlerBool(object source, MuuttuneetEventBool m);
-    */
 
     public delegate void OmaEventHandler(object source, MuuttuneetEvent m);
 
@@ -24,14 +18,15 @@ namespace Harkkatyö
     {
         private Prosessi prosessi = new Prosessi();
 
-
-        // Säätimet lämpötilan ja paineen säätämiseen. Paineen säätämiseen toteutettava PI- tai PID-säädin, pelkällä P ei saavuteta riittävää tarkkuutta?
-        private Saadin V104Saadin = new Saadin(false, -0.5);
+        // Säätimet lämpötilan ja paineen säätämiseen
         private Saadin E100Saadin = new Saadin(true, 10);
+        private Saadin V104Saadin = new Saadin(false, -0.01*0.5);
 
+        // Booleanit joilla varmistetaan, ettei clientiä voi initoida tai prosessia käynnistää, jos ne on jo tehty eikä niitä ole sammutettu
         private bool clientStatus = false;
         private bool kaynnistetty = false;
 
+        // Boolean, johon tallennetaan tieto siitä onko prosessi käynnissä
         private bool sekvenssiKaynnissa = false;
 
         private double keittoaika;
@@ -57,9 +52,15 @@ namespace Harkkatyö
                 thread2.Start();
                 kaynnistetty = true;
             }
+        }
+
+        // Käynnistetään sekvenssi
+        public void kaynnistaSekvenssi()
+        {
+            sekvenssiKaynnissa = true;
 
             // Muutetaan parametrit koekäyttöä varten tämän kautta
-            muutaParametreja(20, 30, 15, 200);
+            muutaParametreja(20, 25, 15, 250);
 
             // Tulostetaan muutetut parametrit outputiin testitarkoituksessa
             Trace.WriteLine(keittopaine);
@@ -67,54 +68,8 @@ namespace Harkkatyö
             Trace.WriteLine(keittolampotila);
             Trace.WriteLine(kyllastysaika);
 
-        }
-
-        // Käynnistetään sekvenssi
-        public void kaynnistaSekvenssi()
-        {
-            // Prosessin alustaminen tällä hetkellä sekvenssin käynnistämisessä vain testaustarkoituksessa, oikeasti se alustetaan jo käyttöliittymän pääikkunan avautumisen yhteydesssä
-            AlustaProsessi();
-            sekvenssiKaynnissa = true;
             Thread thread3 = new Thread(Kaynnista);
             thread3.Start();
-
-            /*
-            // Muutetaan parametrit koekäyttöä varten tämän kautta
-            muutaParametreja(20, 30, 15, 200);
-
-            // Tulostetaan muutetut parametrit outputiin testitarkoituksessa
-            Trace.WriteLine(keittopaine);
-            Trace.WriteLine(keittoaika);
-            Trace.WriteLine(keittolampotila);
-            Trace.WriteLine(kyllastysaika);*/
-
-            // Lämmittimen käynnistäminen on tällä hetkellä mukana vain testaustarkoituksessa
-            // prosessi.MuutaOnOff("E100", true);
-            /*
-            if (tila == 1)
-            {
-                Impregnation();
-            }
-            if (tila == 2)
-            {
-                BlackLiquorFill();
-            }
-            if (tila == 3)
-            {
-                WhiteLiquorFill();
-            }
-            if (tila == 4)
-            {
-                Cooking();
-            }
-            if (tila == 5)
-            {
-                Discharge();
-            }
-            */
-
-
-
         }
 
         public void pysaytaSekvenssi()
@@ -128,26 +83,26 @@ namespace Harkkatyö
             EM2_OP2();
             EM3_OP1();
             EM3_OP6();
-            EM3_OP7();
-            // Digesterin paineen poistaminen tässä vaiheessa? Jätän sen komennon vielä kommentteihin
-            //EM3_OP8();
+            EM3_OP7();            
             EM4_OP2();
             EM5_OP3();
             EM5_OP4();
             U1_OP3();
             U1_OP4();
 
+            // Digesterin paineen poistaminen tässä vaiheessa? Jätän sen komennon vielä kommentteihin
+            //EM3_OP8();
             // Palautetaan prosessin tila kohtaan 1
             tila = 1;
         }
         
         // Muutetaan parametrit käyttöliittymästä käsin
-        public void muutaParametreja(double keittoaika, double keittolampotila, double kyllastysaika, int keittopaine)
+        public void muutaParametreja(double keittoaikaA, double keittolampotilaA, double kyllastysaikaA, int keittopaineA)
         {
-            this.keittoaika = keittoaika;
-            this.keittolampotila = keittolampotila;
-            this.kyllastysaika = kyllastysaika;
-            this.keittopaine = keittopaine;
+            this.keittoaika = keittoaikaA;
+            this.keittolampotila = keittolampotilaA;
+            this.kyllastysaika = kyllastysaikaA;
+            this.keittopaine = keittopaineA;
         }
 
         // Yksityiset metodit alkavat
@@ -158,8 +113,9 @@ namespace Harkkatyö
             prosessi.MikaMuuttui += new OmaEventHandler(PaivitaArvot);
         }
 
-        private void Kaynnista() 
+        private void Kaynnista()
         {
+            // Normaali toimintasykli
             if (tila == 1 && sekvenssiKaynnissa == true)
             {
                 Impregnation();
@@ -196,8 +152,7 @@ namespace Harkkatyö
             EM3_OP2();
 
             if (!LS300P) 
-            {
-                
+            {                
                 while (!LS300P && sekvenssiKaynnissa == true)
                 {                    
                     Trace.WriteLine("LS300 ei ole valmis");
@@ -205,17 +160,16 @@ namespace Harkkatyö
                     Thread.Sleep(500);
                 }
             }
+
+            // EM3_OP1 
             EM3_OP1();
             Trace.WriteLine("Käynnistetään kyllästysajan laskuri");
+            Trace.WriteLine(impregnationTime);
             // Pistetään laskuri rullaamaan, kun yläraja on saavutettu            
             while (impregnationTime > 0.0 && sekvenssiKaynnissa == true)
-            {
-                // LS+300 aktivoituu
-                
-                // EM3_OP1                    
+            {                   
                 impregnationTime -= 0.5;
                 Trace.WriteLine("Kyllästysaikaa jäljellä " + impregnationTime.ToString());
-                
                 Thread.Sleep(500);
 
             }
@@ -300,7 +254,7 @@ namespace Harkkatyö
             // EM3_OP4, EM1_OP1
             EM3_OP4();
             EM1_OP1();
-
+            // Nostetaan lämpötilaa ja tarkastellaan turvarajaa, kunnes lämpötila on saavutettu
             while (TI300 < keittolampotila && sekvenssiKaynnissa == true) 
             {
                 LI100Safety();
@@ -315,9 +269,13 @@ namespace Harkkatyö
             // U1_OP1, U1_OP2
             while (cookingTime > 0  && sekvenssiKaynnissa == true)
             {
-                U1_OP1();
+                // Käynnistetään paineen ja lämpötilan säätö. Keittoaika ei kuitenkaan lähde laskemaan, ennen kun keittopaine on saavutettu
+                bool saavutettu = U1_OP1();
                 U1_OP2();
-                cookingTime -= 0.5;
+                if (saavutettu) 
+                {
+                    cookingTime -= 0.5;
+                }                
                 Thread.Sleep(500);
             }
             // Time tc tulee täyteen
@@ -360,7 +318,9 @@ namespace Harkkatyö
             tila = 1;
         }
 
-        // Varsinaiset metodit, joilla prosessin eri vaiheet toteutetaam
+        // Varsinaiset metodit, joilla prosessin eri vaiheet toteutetaan
+        // Operaatiot on toteutettu tehtävänannon mukana tarjotun PFC-kaavion mukaisesti
+        // Operaatioissa kutsutaan prosessin metodeita, jotka kutsuvat simulaattorin metodeita
 
         // EM1 operaatiot
         private void EM1_OP1() 
@@ -444,13 +404,13 @@ namespace Harkkatyö
         private void EM3_OP8()
         {
             prosessi.MuutaOnOff("V204", true);            
+            // Pidetään viive paineen poistamiseksi
             double viive = 1;
             while (viive > 0)
             {
                 viive -= 0.5;
                 Thread.Sleep(500);
             }
-            // tähän väliin toteutettava 1 s viive myöhemmin
             prosessi.MuutaOnOff("V204", false);
         }
 
@@ -490,32 +450,49 @@ namespace Harkkatyö
             prosessi.MuutaPumpunOhjaus("P200", 0);
         }
 
-        // U1 operaatiot, käynnistetään/lopetetaan parametrien säätö
-        private void U1_OP1() 
+        // U1 operaatiot, käynnistetään/lopetetaan paineen ja lämpötila säätö. Keskeytetään sekvenssi, jos suure poikkeaa liikaa asetusarvosta
+
+        // Paineen säätö. Palautetaan kutsujalle tieto siitä, onko haluttu paine jo saavutettu
+        private bool U1_OP1() 
         {
+            // Tallennetaan muuttujaan saavutettu tieto siitä, onko haluttu lämpötila jo saavutettu riittävällä tarkkuudella, oletuksena se on false
+            bool saavutettu = false;
+            // Luetaan PI300
             int PI300 = mitattavatInt["PI300"];
-            // Säädin, jolla säädetään V104 tilaa tarpeen mukaan
-            int ohjaus = V104Saadin.PalautaOhjaus(Convert.ToDouble(keittopaine), Convert.ToDouble(PI300));
+            // Voidaan laskea venttiilin suuntaa antava asento halutun paineen perusteella, koska venttiili käyttäytyy testien perusteella käytännössä lineaarisesti
+            int nollalinja = 100 - Convert.ToInt32(keittopaine)/3;
+            // Käytetään ohjauksen laskemiseen Säädin-luokan oliota, jolle annetaan parametreina keittopaine, nykyinen paine ja aiemmin laskettu nollalinja
+            int ohjaus = V104Saadin.PalautaOhjaus(Convert.ToDouble(keittopaine), Convert.ToDouble(PI300), nollalinja);
+            // Muutetaan halutun venttiilin tilaa prosessin metodin avulla, annetaan parametrina venttiilin nimi ja ohjaus
             prosessi.MuutaVenttiilinOhjaus("V104", ohjaus);
 
-            // Jos paine poikkeaa liikaa asetusarvosta, keskeytetään sekvenssi
-            if (Math.Abs(PI300 - keittopaine) > 10)
+            // Tarkastetaan, onko haluttu paine jo saavutettu
+            if (Math.Abs(PI300 - keittopaine) < 10) 
+            {
+                // Kun haluttu paine on saavutettu, paineen seuranta otetaan käyttöön
+                saavutettu = true;
+
+            }
+                // Jos paine poikkeaa liikaa asetusarvosta, keskeytetään sekvenssi
+            if (Math.Abs(PI300 - keittopaine) > 10 && saavutettu)
             {
                 Trace.WriteLine("Paine poikkesi sallitusta");
-                Trace.WriteLine(PI300);
-                // pysaytaSekvenssi();
+                Trace.WriteLine("Paine: " + PI300.ToString() + ", virtaus " + mitattavatDouble["FI100"].ToString());
+                Trace.WriteLine("Venttiilin uusi ohjaus: " + ohjaus);
+                pysaytaSekvenssi();
             }
+            return saavutettu;
         }
+        // Lämpötilan säätö 
         private void U1_OP2()
         {
             double TI300 = mitattavatDouble["TI300"];
             double TI100 = mitattavatDouble["TI100"];
             // Tälle säädin, jolla katkotaan E100 sopivasti
-            int ohjaus = E100Saadin.PalautaOhjaus(keittolampotila, TI300);
+            int ohjaus = E100Saadin.PalautaOhjaus(keittolampotila, TI300, 0);
 
             bool ohjausBool;
 
-            
             if (ohjaus == 100)
             {
                 ohjausBool = true;
@@ -577,41 +554,6 @@ namespace Harkkatyö
             }
         }
 
-        /*
-        private void PaivitaArvotDouble(object source, MuuttuneetEventDouble m)
-        {
-            DateTime time = DateTime.Now;
-            Trace.WriteLine("aika: " + time.ToString("HH: mm:ss.fff") + " toimintalogiikka sai tiedon muutoksista");
-            Dictionary<string, double> muuttuneet = m.PalautaArvot();
-            foreach (string avain in muuttuneet.Keys) 
-            {
-                Trace.WriteLine(avain.ToString() + " " + muuttuneet[avain].ToString());
-            }            
-            // Thread.Sleep(500);
-            //throw new NotImplementedException();
-        }
-
-        static void PaivitaArvotBool(object source, MuuttuneetEventBool m)
-        {
-            Trace.WriteLine("päivitetään boolit eventistä");
-            Dictionary<string, bool> muuttuneet = m.PalautaArvot();
-            foreach (string avain in muuttuneet.Keys)
-            {
-                Trace.WriteLine(avain.ToString() + " " + muuttuneet[avain].ToString());
-            }
-            //throw new NotImplementedException();
-        }
-
-        static void PaivitaArvotInt(object source, MuuttuneetEventInt m)
-        {
-            Trace.WriteLine("päivitetään intit eventistä");
-            //throw new NotImplementedException();
-        }
-        */
-
-
-        // Tilan muuttaminen privateksi, ehkä myös eri muotoon? Int? Tai dict<string, bool>?        
-        
         // Prosessin tila. 1 = Impregnation, 2 = BlackLiquorFill, 3 = WhiteLiquorFill, 4 = Cooking, 5 = Discharge
         private int tila = 1;
         // public bool tila;
@@ -635,8 +577,6 @@ namespace Harkkatyö
             { "TI100", 20 },
             { "TI300", 20 },
             { "FI100", 0 }
-        };
-
-        
+        };        
     }
 }

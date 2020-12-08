@@ -13,18 +13,21 @@ namespace Harkkatyö
 
         private int ohjaus;
 
-        private bool tyyppi;
-        private double gain;
+        private int ohjausNolla;
 
-        public Saadin(bool onOff, double gainAsetus) 
+        private bool tyyppi;
+        private double Kp;
+
+        public Saadin(bool onOff, double KpAsetus) 
         {
             tyyppi = onOff;
             asetusArvo = 0;
             mitattuArvo = 0;
-            gain = gainAsetus;
+            Kp = KpAsetus;
         }
-        public int PalautaOhjaus(double asetusarvo, double mittaus)
+        public int PalautaOhjaus(double asetusarvo, double mittaus, int nollalinja)
         {
+            ohjausNolla = nollalinja;
             MuutaMitattuArvo(mittaus);
             MuutaAsetusarvo(asetusarvo);
             int ohjaus = LaskeOhjaus();
@@ -42,16 +45,23 @@ namespace Harkkatyö
         // Lasketaan ohjaus yksinkertaisella P-säätimellä. Jos ohjattava laite hyväksyy ohjauksena vain 0 tai 100, muutetaan ohjaus hyväksyttyyn muotoon
         private int LaskeOhjaus()
         {
+            int ohjausP;
+           
             double erosuure = asetusArvo - mitattuArvo;
-            ohjaus = Convert.ToInt32(erosuure * gain);
 
-            if (ohjaus > 100)
+            // Muutetaan lasketut haarakohtaiset ohjaukset integereiksi ja summataan ne
+            ohjausP = Convert.ToInt32(erosuure * Kp);
+
+            ohjaus = ohjausP;
+
+            // Suodatetaan ohjaus sallitulle välille ja palautetaan se
+            if (ohjaus + ohjausNolla > 100)
             {
-                ohjaus = 100;
+                ohjaus = 100 - ohjausNolla;
             }
-            if (ohjaus < 0)
+            if (ohjaus + ohjausNolla < 0)
             {
-                ohjaus = 0;
+                ohjaus = 0 - ohjausNolla;
             }
             if (tyyppi)
             {
@@ -63,8 +73,8 @@ namespace Harkkatyö
                 {
                     ohjaus = 0;
                 }
-            }
-            return ohjaus;
+            }            
+            return ohjaus + ohjausNolla;
         }
 
     }
