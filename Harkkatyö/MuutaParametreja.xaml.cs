@@ -27,6 +27,9 @@ namespace Harkkatyö
 
         // Muuttujat, joihin kenttien arvot luetaan
         private double keittoaikaTulos;
+        private double kyllastysAikaTulos;
+        private double keittoLampoTulos;
+        private int keittoPaineTulos;
         public MuutaParametreja()
         {
             InitializeComponent();
@@ -49,15 +52,18 @@ namespace Harkkatyö
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
             //tempKeittoaika
+            tempKeittoaika = keittoaikaTulos;
 
         }
         private void Button_Click_4(object sender, RoutedEventArgs e)
         {
             //tempKyllastysaika
+            tempKyllastysaika = kyllastysAikaTulos;
         }
         private void Button_Click_5(object sender, RoutedEventArgs e)
         {
             //tempKeittolampotila
+            tempKeittolampotila = keittoLampoTulos;
         }
 
 
@@ -91,6 +97,7 @@ namespace Harkkatyö
             string luku2Str = KeittoPaineUusi.Text;
             //int keittopaine = tempKeittopaine;
             //string luku2TextBox = int.Parse(keittopaine);
+            keittoPaineTulos = int.Parse(luku2Str);
         }
 
         private void TextBox_TextChanged_3(object sender, TextChangedEventArgs e)
@@ -98,6 +105,7 @@ namespace Harkkatyö
             string luku3Str = KeittoLampoUusi.Text;
             //double keittolampotila = tempKeittolampotila;
             //string luku3TextBox = double.Parse(keittolampotila);
+            keittoLampoTulos = double.Parse(luku3Str);
         }
 
         private void TextBox_TextChanged_4(object sender, TextChangedEventArgs e)
@@ -105,6 +113,7 @@ namespace Harkkatyö
             string luku4Str = KyllastysaikaUusi.Text;
             //double kyllastysaika = tempKyllastysaika;
             //string luku4TextBox = double.Parse(kyllastysaika);
+            kyllastysAikaTulos = double.Parse(luku4Str);
         }
 
         private string GetDebuggerDisplay()
