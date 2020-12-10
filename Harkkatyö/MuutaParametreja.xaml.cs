@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -30,12 +31,17 @@ namespace Harkkatyö
         private int tempKeittopaine = MainWindow.keittopaine;
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            //tempKeittopaine
+
+            // Lähetä tulos käyttöliittymälle
+            //double tulos = luku1Dbl * luku2Dbl;
+            //String tulosStr = tulos.ToString();
+            //tulosTextBox.Text = tulosStr;
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
             //tempKeittoaika
+
         }
         private void Button_Click_4(object sender, RoutedEventArgs e)
         {
@@ -63,9 +69,39 @@ namespace Harkkatyö
             this.Close();
         }
 
-        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0059:Unnecessary assignment of a value", Justification = "<Pending>")]
+        private void TextBox_TextChanged_1(object sender, TextChangedEventArgs e)
         {
+            string keittoaika = null;
+            //String luku1Str = luku1TextBox.Text;
+            //string keittoaika = tempKeittoaika;
+            string luku1TextBox = double.Parse(keittoaika);
+        }
 
+        private void TextBox_TextChanged_2(object sender, TextChangedEventArgs e)
+        {
+            //String luku2Str = luku2TextBox.Text;
+            //int keittopaine = tempKeittopaine;
+            string luku2TextBox = int.Parse(keittopaine);
+        }
+
+        private void TextBox_TextChanged_3(object sender, TextChangedEventArgs e)
+        {
+            //String luku3Str = luku3TextBox.Text;
+            //double keittolampotila = tempKeittolampotila;
+            string luku3TextBox = double.Parse(keittolampotila);
+        }
+
+        private void TextBox_TextChanged_4(object sender, TextChangedEventArgs e)
+        {
+            //String luku4Str = luku4TextBox.Text;
+            //double kyllastysaika = tempKyllastysaika;
+            string luku4TextBox = double.Parse(kyllastysaika);
+        }
+
+        private string GetDebuggerDisplay()
+        {
+            return ToString();
         }
     }
 }
