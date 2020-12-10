@@ -20,15 +20,23 @@ namespace Harkkatyö
     /// </summary>
     public partial class MuutaParametreja : Window
     {
+        private double tempKeittoaika;
+        private double tempKeittolampotila;
+        private double tempKyllastysaika;
+        private int tempKeittopaine;
+
+        // Muuttujat, joihin kenttien arvot luetaan
+        private double keittoaikaTulos;
         public MuutaParametreja()
         {
             InitializeComponent();
-        }
+            tempKeittoaika = MainWindow.keittoaika;
+            tempKeittolampotila = MainWindow.keittolampotila;
+            tempKyllastysaika = MainWindow.kyllastysaika;
+            tempKeittopaine = MainWindow.keittopaine;
+    }
 
-        private double tempKeittoaika = MainWindow.keittoaika;
-        private double tempKeittolampotila = MainWindow.keittolampotila;
-        private double tempKyllastysaika = MainWindow.kyllastysaika;
-        private int tempKeittopaine = MainWindow.keittopaine;
+        
         private void Button_Click(object sender, RoutedEventArgs e)
         {
 
@@ -75,6 +83,7 @@ namespace Harkkatyö
             string luku1Str = KeittoAikaUusi.Text;
             //string keittoaika = tempKeittoaika;
             //string luku1TextBox = double.Parse(keittoaika);
+            keittoaikaTulos = double.Parse(luku1Str);
         }
 
         private void TextBox_TextChanged_2(object sender, TextChangedEventArgs e)
