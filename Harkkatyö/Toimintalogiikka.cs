@@ -38,6 +38,9 @@ namespace Harkkatyö
 
         // Julkiset metodit, joita voidaan kutsua käyttöliittymästä
         // Alustetaan prosessi, otetaan yhteys simulaattoriin ja käynnistetään thread jota käytetään prosessin tilan seuraamiseen
+        public event PaivitaTiedot paivita;
+        public event TilaVaihtui tilaVaihtui;
+        
         public void AlustaProsessi()
         {
             if (!clientStatus)
@@ -72,6 +75,34 @@ namespace Harkkatyö
             thread3.Start();
         }
 
+        internal double PalautaDouble(string v)
+        {
+            double luku;
+            if (mitattavatDouble.ContainsKey(v))
+            {
+                luku = mitattavatDouble[v];
+            }
+            else
+            {
+                luku = -1;
+            }
+            return luku;
+        }
+
+        internal int PalautaInt(string v)
+        {
+            int luku;
+            if (mitattavatInt.ContainsKey(v))
+            {
+                luku = mitattavatInt[v];
+            }
+            else
+            {
+                luku = -1;
+            }
+            return luku;
+        }
+
         public void pysaytaSekvenssi()
         {
             // Lämmittimen sammuttaminen on tällä hetkellä mukana vain testaustarkoituksessa
@@ -94,6 +125,8 @@ namespace Harkkatyö
             //EM3_OP8();
             // Palautetaan prosessin tila kohtaan 1
             tila = 1;
+            TilaVaihtui handler = tilaVaihtui;
+            handler?.Invoke("Idle");
         }
         
         // Muutetaan parametrit käyttöliittymästä käsin
@@ -142,6 +175,9 @@ namespace Harkkatyö
         // Sekvenssin runkometodeille ehkä kuitenkin jokin palautusarvo prosessin tilan seuraamiseksi? Esim bool siitä onko tilanne valmis vai ei?
         private void Impregnation() 
         {
+            TilaVaihtui handler = tilaVaihtui;
+            handler?.Invoke("Impregnation");
+            
             Trace.WriteLine("Aloitetaan vaihe 1");
             double impregnationTime = kyllastysaika;
             bool LS300P = mitattavatBool["LS+300"];
@@ -184,13 +220,19 @@ namespace Harkkatyö
             
             // EM3_OP8
             EM3_OP8();
-            
-            // Lopuksi muutetaan tilaa isommaksi ja kutsutaan uudestaan sekvenssin käynnistämistä
-            tila += 1;
-            Kaynnista();
+
+            if (sekvenssiKaynnissa)
+            {
+                // Lopuksi muutetaan tilaa isommaksi ja kutsutaan uudestaan sekvenssin käynnistämistä
+                tila += 1;
+                Kaynnista();
+            }
+
         }
         private void BlackLiquorFill() 
         {
+            TilaVaihtui handler = tilaVaihtui;
+            handler?.Invoke("Black Liquor Fill");
             Trace.WriteLine("Aloitetaan vaihe 2");
             int LI400 = mitattavatInt["LI400"];
             // LI400 rajana on LI400 < 35 mm 
@@ -212,12 +254,17 @@ namespace Harkkatyö
             EM5_OP3();
             EM4_OP2();
 
-            // Lopuksi muutetaan tilaa isommaksi ja kutsutaan uudestaan sekvenssin käynnistämistä
-            tila += 1;
-            Kaynnista();
+            if (sekvenssiKaynnissa)
+            {
+                // Lopuksi muutetaan tilaa isommaksi ja kutsutaan uudestaan sekvenssin käynnistämistä
+                tila += 1;
+                Kaynnista();
+            }
         }
         private void WhiteLiquorFill()
         {
+            TilaVaihtui handler = tilaVaihtui;
+            handler?.Invoke("White Liquor Fill");
             Trace.WriteLine("Aloitetaan vaihe 3");
             int LI400 = mitattavatInt["LI400"];
             // LI400 rajana on LI400 > 80 mm 
@@ -240,12 +287,17 @@ namespace Harkkatyö
             EM3_OP6();
             EM1_OP4();
 
-            // Lopuksi muutetaan tilaa isommaksi ja kutsutaan uudestaan sekvenssin käynnistämistä
-            tila += 1;
-            Kaynnista();
+            if (sekvenssiKaynnissa)
+            {
+                // Lopuksi muutetaan tilaa isommaksi ja kutsutaan uudestaan sekvenssin käynnistämistä
+                tila += 1;
+                Kaynnista();
+            }
         }
         private void Cooking() 
         {
+            TilaVaihtui handler = tilaVaihtui;
+            handler?.Invoke("Cooking");
             Trace.WriteLine("Aloitetaan vaihe 4");
             double cookingTime = keittoaika;
             double TI300 = mitattavatDouble["TI300"];
@@ -291,12 +343,18 @@ namespace Harkkatyö
             // EM3_OP8
             EM3_OP8();
 
-            // Lopuksi muutetaan tilaa isommaksi ja kutsutaan uudestaan sekvenssin käynnistämistä
-            tila += 1;
-            Kaynnista();
+            if (sekvenssiKaynnissa)
+            {
+                // Lopuksi muutetaan tilaa isommaksi ja kutsutaan uudestaan sekvenssin käynnistämistä
+                tila += 1;
+                Kaynnista();
+            }
         }
         private void Discharge()
         {
+            TilaVaihtui handler = tilaVaihtui;
+            handler?.Invoke("Discharge");
+
             Trace.WriteLine("Aloitetaan vaihe 5");
             bool LS300N = mitattavatBool["LS-300"];
             // EM5_OP2, EM3_OP5
@@ -552,6 +610,10 @@ namespace Harkkatyö
                     //Trace.WriteLine(avain.ToString() + " " + mitattavatInt[avain].ToString());
                 }
             }
+
+            PaivitaTiedot handler = paivita;
+            handler?.Invoke();
+
         }
 
         // Prosessin tila. 1 = Impregnation, 2 = BlackLiquorFill, 3 = WhiteLiquorFill, 4 = Cooking, 5 = Discharge

@@ -5,21 +5,129 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Harkkatyö"
         mc:Ignorable="d"
-        Title="Pääikkuna" Height="450" Width="800">
+        Title="Pääikkuna" Height="550" Width="800">
     <Grid>
-        <Button Content="Muokkaa parametreja" HorizontalAlignment="Left" Margin="659,389,0,0" VerticalAlignment="Top" Width="123" Click="Button_Click_1"/>
-        <Button Content="Käynnistä sekvenssi" HorizontalAlignment="Left" Margin="413,389,0,0" VerticalAlignment="Top" Width="118" Click="Button_Click"/>
-        <Button Content="Keskeytä sekvenssi" HorizontalAlignment="Left" Margin="536,389,0,0" VerticalAlignment="Top" Width="118" Click="Button_Click_2"/>
-        <Rectangle Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="160" Margin="45,34,0,0" Stroke="Black" VerticalAlignment="Top" Width="80"/>
-        <Label Content="T200 pinnankorkeus" HorizontalAlignment="Left" Height="30" Margin="21,199,0,0" VerticalAlignment="Top" Width="129"/>
-        <Rectangle Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="160" Margin="194,34,0,0" Stroke="Black" VerticalAlignment="Top" Width="80"/>
-        <Label Content="T300 pinnankorkeus" HorizontalAlignment="Left" Height="30" Margin="170,199,0,0" VerticalAlignment="Top" Width="129"/>
-        <Rectangle Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="160" Margin="345,34,0,0" Stroke="Black" VerticalAlignment="Top" Width="80"/>
-        <Label Content="T400 pinnankorkeus" HorizontalAlignment="Left" Height="30" Margin="321,199,0,0" VerticalAlignment="Top" Width="129"/>
-        <Rectangle Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="160" Margin="497,34,0,0" Stroke="Black" VerticalAlignment="Top" Width="80"/>
-        <Label Content="T300 paine" HorizontalAlignment="Left" Height="30" Margin="473,199,0,0" VerticalAlignment="Top" Width="129"/>
-        <Rectangle Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="160" Margin="657,34,0,0" Stroke="Black" VerticalAlignment="Top" Width="80"/>
-        <Label Content="T300 lämpötila" HorizontalAlignment="Left" Height="30" Margin="633,199,0,0" VerticalAlignment="Top" Width="129"/>
+        <Button Content="Muokkaa parametreja" HorizontalAlignment="Left" Margin="659,484,0,0" VerticalAlignment="Top" Width="123" Click="Button_Click_1"/>
+        <Button Content="Käynnistä sekvenssi" HorizontalAlignment="Left" Margin="413,484,0,0" VerticalAlignment="Top" Width="118" Click="Button_Click" RenderTransformOrigin="0.483,3.968"/>
+        <Button Content="Keskeytä sekvenssi" HorizontalAlignment="Left" Margin="536,484,0,0" VerticalAlignment="Top" Width="118" Click="Button_Click_2"/>
+        <Grid Width="700">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid Name="T100Pinta" Margin="9" VerticalAlignment="Top" HorizontalAlignment="Center" Grid.Column="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition Height="8*"/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="1" Text="T200 paine" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.ColumnSpan="2"/>
+                    <TextBlock Grid.Row="3" Text="T200 paine" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.ColumnSpan="2"/>
+                    <ProgressBar Grid.Row="2" Name="T100PB" Grid.ColumnSpan="2" Width="100" Height="300" ValueChanged="T100PB_ValueChanged" Orientation="Vertical"/>
+                <TextBlock Grid.Row="0"  VerticalAlignment="Center" HorizontalAlignment="Center" Grid.ColumnSpan="2"><Run Text="T"/><Run Text="1"/><Run Text="00 "/><Run Text="Pinnankorkeus"/></TextBlock>
+                <TextBlock Grid.Row="4" Text="Korkeus"  VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    <TextBox Grid.Row="4" Grid.Column="1" x:Name="T100KorkeusNum"/>
+                </Grid>
+            <Grid  Name="T200Pinta" Margin="9" VerticalAlignment="Top" HorizontalAlignment="Center"  Grid.Column="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition Height="8*"/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="1" Text="T200 paine" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.ColumnSpan="2"/>
+                <TextBlock Grid.Row="3" Text="T200 paine" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.ColumnSpan="2"/>
+                <ProgressBar Grid.Row="2" Name="T200PB" Grid.ColumnSpan="2"  Width="100" Height="300" ValueChanged="T200PB_ValueChanged" Orientation="Vertical"/>
+                <TextBlock Grid.Row="0"  VerticalAlignment="Center" HorizontalAlignment="Center" Grid.ColumnSpan="2"><Run Text="T200 "/><Run Text="Pinankorkeus"/></TextBlock>
+                <TextBlock Grid.Row="4" Text="Korkeus"  VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                <TextBox Grid.Row="4" Grid.Column="1" x:Name="T200KorkeusNum"/>
+            </Grid>
+            <Grid  Name="T400Pinta" Margin="9" VerticalAlignment="Top" HorizontalAlignment="Center" Grid.Column="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition Height="8*"/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="1" Text="T200 paine" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.ColumnSpan="2"/>
+                <TextBlock Grid.Row="3" Text="T200 paine" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.ColumnSpan="2"/>
+                <ProgressBar Grid.Row="2" Name="T400PB" Grid.ColumnSpan="2" Width="100" Height="300" ValueChanged="T400PB_ValueChanged" Orientation="Vertical"/>
+                <TextBlock Grid.Row="0"  VerticalAlignment="Center" HorizontalAlignment="Center" Grid.ColumnSpan="2"><Run Text="T"/><Run Text="4"/><Run Text="00 "/><Run Text="Pinnankorkeus"/></TextBlock>
+                <TextBlock Grid.Row="4" Text="Korkeus"  VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                <TextBox Grid.Row="4" Grid.Column="1" x:Name="T400KorkeusNum"/>
+            </Grid>
+            <Grid  Name="T300Paine" Margin="9" VerticalAlignment="Top" HorizontalAlignment="Center" Grid.Column="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition Height="8*"/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="1" Text="T200 paine" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.ColumnSpan="2"/>
+                <TextBlock Grid.Row="3" Text="T200 paine" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.ColumnSpan="2"/>
+                <ProgressBar Grid.Row="2" Name="T300PBpaine" Grid.ColumnSpan="2" Width="100" Height="300" ValueChanged="T300PBpaine_ValueChanged"/>
+                <TextBlock Grid.Row="0"  VerticalAlignment="Center" HorizontalAlignment="Center" Grid.ColumnSpan="2"><Run Text="T"/><Run Text="3"/><Run Text="00 "/><Run Text="Paine"/></TextBlock>
+                <TextBlock Grid.Row="4" Text="Paine"  VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                <TextBox Grid.Row="4" Grid.Column="1" x:Name="T300PaineNum"/>
+            </Grid>
+            <Grid   Name="T300T" Margin="9" VerticalAlignment="Top" HorizontalAlignment="Center" Grid.Column="4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition Height="8*"/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="1" Text="T200 paine" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.ColumnSpan="2"/>
+                <TextBlock Grid.Row="3" Text="T200 paine" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.ColumnSpan="2"/>
+                <ProgressBar Grid.Row="2" Name="T300PBlampo" Grid.ColumnSpan="2" Width="100" Height="300" ValueChanged="T300PBlampo_ValueChanged"/>
+                <TextBlock Grid.Row="0"  VerticalAlignment="Center" HorizontalAlignment="Center" Grid.ColumnSpan="2"><Run Text="T"/><Run Text="3"/><Run Text="00 Lämpötila"/></TextBlock>
+                <TextBlock Grid.Row="4" Text="Lämpötila"  VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                <TextBox Grid.Row="4" Grid.Column="1" x:Name="T300LampoNum"/>
+            </Grid>
+        </Grid>
+
+        <Grid Height="30" Width="350" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="15">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="Sekvenssin nykyinen tila" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            <TextBox Grid.Column="1" x:Name="sekvenssinTila" TextAlignment="Center" Text="Idle"/>
+        </Grid>
 
     </Grid>
 </Window>
