@@ -69,39 +69,43 @@ namespace Harkkatyö
             this.Close();
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0059:Unnecessary assignment of a value", Justification = "<Pending>")]
+        //[System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0059:Unnecessary assignment of a value", Justification = "<Pending>")]
         private void TextBox_TextChanged_1(object sender, TextChangedEventArgs e)
         {
-            string keittoaika = null;
-            //String luku1Str = luku1TextBox.Text;
+            string luku1Str = KeittoAikaUusi.Text;
             //string keittoaika = tempKeittoaika;
-            string luku1TextBox = double.Parse(keittoaika);
+            //string luku1TextBox = double.Parse(keittoaika);
         }
 
         private void TextBox_TextChanged_2(object sender, TextChangedEventArgs e)
         {
-            //String luku2Str = luku2TextBox.Text;
+            string luku2Str = KeittoPaineUusi.Text;
             //int keittopaine = tempKeittopaine;
-            string luku2TextBox = int.Parse(keittopaine);
+            //string luku2TextBox = int.Parse(keittopaine);
         }
 
         private void TextBox_TextChanged_3(object sender, TextChangedEventArgs e)
         {
-            //String luku3Str = luku3TextBox.Text;
+            string luku3Str = KeittoLampoUusi.Text;
             //double keittolampotila = tempKeittolampotila;
-            string luku3TextBox = double.Parse(keittolampotila);
+            //string luku3TextBox = double.Parse(keittolampotila);
         }
 
         private void TextBox_TextChanged_4(object sender, TextChangedEventArgs e)
         {
-            //String luku4Str = luku4TextBox.Text;
+            string luku4Str = KyllastysaikaUusi.Text;
             //double kyllastysaika = tempKyllastysaika;
-            string luku4TextBox = double.Parse(kyllastysaika);
+            //string luku4TextBox = double.Parse(kyllastysaika);
         }
 
         private string GetDebuggerDisplay()
         {
             return ToString();
+        }
+
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
         }
     }
 }

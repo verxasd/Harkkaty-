@@ -7,22 +7,22 @@
         mc:Ignorable="d"
         Title="Muuta parametreja" Height="475" Width="750">
     <Grid>
-        <TextBox HorizontalAlignment="Left" Height="23" Margin="123,72,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" TextChanged="TextBox_TextChanged_1"/>
+        <TextBox HorizontalAlignment="Left" Height="23" Name="KeittoAikaUusi" Margin="123,72,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" TextChanged="TextBox_TextChanged_1"/>
         <TextBox HorizontalAlignment="Left" Height="23" Margin="123,44,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" TextChanged="TextBox_TextChanged"/>
         <Label Content="Nykyinen arvo" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top"/>
         <Label Content="Uusi arvo" HorizontalAlignment="Left" Margin="10,77,0,0" VerticalAlignment="Top"/>
         <Label Content="Keittoaika" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
-        <TextBox HorizontalAlignment="Left" Height="23" Margin="123,216,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120" TextChanged="TextBox_TextChanged_2"/>
+        <TextBox HorizontalAlignment="Left" Height="23" Name="KeittoPaineUusi"  Margin="123,216,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120" TextChanged="TextBox_TextChanged_2"/>
         <TextBox HorizontalAlignment="Left" Height="23" Margin="123,188,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
         <Label Content="Nykyinen arvo" HorizontalAlignment="Left" Margin="10,185,0,0" VerticalAlignment="Top"/>
         <Label Content="Uusi arvo" HorizontalAlignment="Left" Margin="10,221,0,0" VerticalAlignment="Top"/>
         <Label Content="Keittopaine" HorizontalAlignment="Left" Margin="10,154,0,0" VerticalAlignment="Top"/>
-        <TextBox HorizontalAlignment="Left" Height="23" Margin="519,72,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120" TextChanged="TextBox_TextChanged_3"/>
+        <TextBox HorizontalAlignment="Left" Height="23" Name ="KeittoLampoUusi" Margin="519,72,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120" TextChanged="TextBox_TextChanged_3"/>
         <TextBox HorizontalAlignment="Left" Height="23" Margin="519,44,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
         <Label Content="Nykyinen arvo" HorizontalAlignment="Left" Margin="406,41,0,0" VerticalAlignment="Top"/>
         <Label Content="Uusi arvo" HorizontalAlignment="Left" Margin="406,77,0,0" VerticalAlignment="Top"/>
         <Label Content="Keittolämpötila" HorizontalAlignment="Left" Margin="406,10,0,0" VerticalAlignment="Top"/>
-        <TextBox HorizontalAlignment="Left" Height="23" Margin="519,216,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120" TextChanged="TextBox_TextChanged_4"/>
+        <TextBox HorizontalAlignment="Left" Height="23" Name="KyllastysaikaUusi" Margin="519,216,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120" TextChanged="TextBox_TextChanged_4"/>
         <TextBox HorizontalAlignment="Left" Height="23" Margin="519,188,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
         <Label Content="Nykyinen arvo" HorizontalAlignment="Left" Margin="406,185,0,0" VerticalAlignment="Top"/>
         <Label Content="Uusi arvo" HorizontalAlignment="Left" Margin="406,221,0,0" VerticalAlignment="Top"/>
