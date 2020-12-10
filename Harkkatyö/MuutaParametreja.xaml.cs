@@ -25,7 +25,7 @@ namespace Harkkatyö
         private double tempKyllastysaika;
         private int tempKeittopaine;
 
-        // Muuttujat, joihin kenttien arvot luetaan
+        //  Muuttujat, joihin kenttien arvot luetaan
         private double keittoaikaTulos;
         private double kyllastysAikaTulos;
         private double keittoLampoTulos;
