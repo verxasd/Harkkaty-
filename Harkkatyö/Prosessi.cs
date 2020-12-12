@@ -68,34 +68,50 @@ namespace Harkkatyö
                 asiakas.Dispose();
                 initKutsuttu = false;
             }
-
-            if (yhteydenTila != "Connected" || yhteydenTila != "Connecting") 
+            else
             {
-                asiakas = new MppClient(parametrit);
-                asiakas.ConnectionStatus += new ConnectionStatusEventHandler(YhteydenTilaMuuttui);
-
-                if (!initKutsuttu)
+                if (yhteydenTila != "Connected" || yhteydenTila != "Connecting")
                 {
-                    ClientInit();
-                    initKutsuttu = true;
+                    asiakas = new MppClient(parametrit);
+                    asiakas.ConnectionStatus += new ConnectionStatusEventHandler(YhteydenTilaMuuttui);
+
+                    if (!initKutsuttu)
+                    {
+                        ClientInit();
+                        initKutsuttu = true;
+                    }
+
+
                 }
-                
-                
             }
+
+            
             Trace.Write("Yhteyden tila yhdistämisen jälkeen: " + yhteydenTila);
         }
 
         public void MuutaOnOff(string nimi, bool totuus)
         {
-            asiakas.SetOnOffItem(nimi, totuus);
+            if (yhteydenTila == "Connected")
+            {
+                asiakas.SetOnOffItem(nimi, totuus);
+            }
+            
         }
         public void MuutaPumpunOhjaus(string nimi, int ohjaus)
         {
-            asiakas.SetPumpControl(nimi, ohjaus);
+            if (yhteydenTila == "Connected")
+            {
+                asiakas.SetPumpControl(nimi, ohjaus);
+            }
+                
         }
         public void MuutaVenttiilinOhjaus(string nimi, int ohjaus)
         {
-            asiakas.SetValveOpening(nimi, ohjaus);
+            if (yhteydenTila == "Connected") 
+            {
+                asiakas.SetValveOpening(nimi, ohjaus);
+            }
+                
         }
 
         public void ClientInit()

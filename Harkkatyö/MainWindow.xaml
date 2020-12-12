@@ -7,10 +7,10 @@
         mc:Ignorable="d"
         Title="Pääikkuna" Height="550" Width="800">
     <Grid>
-        <Button Content="Muokkaa parametreja" HorizontalAlignment="Left" Margin="659,484,0,0" VerticalAlignment="Top" Width="123" Click="Button_Click_1"/>
-        <Button Content="Käynnistä sekvenssi" HorizontalAlignment="Left" Margin="413,484,0,0" VerticalAlignment="Top" Width="118" Click="Button_Click" RenderTransformOrigin="0.483,3.968"/>
-        <Button Content="Keskeytä sekvenssi" HorizontalAlignment="Left" Margin="536,484,0,0" VerticalAlignment="Top" Width="118" Click="Button_Click_2"/>
-        <Button Content="Yhdistä prosessiin" HorizontalAlignment="Left" Margin="290,484,0,0" VerticalAlignment="Top" Width="118" Click="Button_Click_3"/>
+        <Button Content="Muokkaa parametreja" HorizontalAlignment="Left" Name="button1" Margin="659,484,0,0" VerticalAlignment="Top" Width="123" Click="Button_Click_1"/>
+        <Button Content="Käynnistä sekvenssi" HorizontalAlignment="Left" Name="button2" Margin="413,484,0,0" VerticalAlignment="Top" Width="118" Click="Button_Click" RenderTransformOrigin="0.483,3.968"/>
+        <Button Content="Keskeytä sekvenssi" HorizontalAlignment="Left" Name="button3" Margin="536,484,0,0" VerticalAlignment="Top" Width="118" Click="Button_Click_2"/>
+        <Button Content="Yhdistä prosessiin" HorizontalAlignment="Left" Name="button4" Margin="290,484,0,0" VerticalAlignment="Top" Width="118" Click="Button_Click_3"/>
         <Grid Width="700">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>

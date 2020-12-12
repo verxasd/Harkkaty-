@@ -56,6 +56,12 @@ namespace Harkkatyö
                 {
                     PaivitaTiedot handler = paivita;
                     handler?.Invoke();
+                    // Pysäytetään sekvenssi yhteyden palatessa, jos sekvenssi on ollut käynnissä yhteyden katketessa
+                    if (tila != 1)
+                    {
+                        kaynnistetty = false;
+                        pysaytaSekvenssi();
+                    }
                 }
                 
 
@@ -73,6 +79,12 @@ namespace Harkkatyö
         {
             Trace.WriteLine("logiikka sai tiedon yhteyden tila vaihtumisesta");
             clientStatus = yhteydenUusiTila;
+
+            if (clientStatus == "Disconnected")
+            {
+                pysaytaSekvenssi();
+            }
+            
             YhteydenTilaVaihtui handler = yhteydenTilaVaihtui;
             handler?.Invoke(clientStatus);
         }

@@ -42,9 +42,10 @@ namespace Harkkatyö
         public MainWindow()
         {
             InitializeComponent();
-            
-            
-            
+            button2.IsEnabled = false;
+            button3.IsEnabled = false;
+
+
             // Muutetaan progress barit täyttymään alhaalta ylös
             T100PB.Orientation = Orientation.Vertical;
             T200PB.Orientation = Orientation.Vertical;
@@ -71,6 +72,16 @@ namespace Harkkatyö
         {
             Trace.WriteLine("yhteyden tila muuttui");
             Dispatcher.BeginInvoke(new Action(() => yhteydenTila.Text = yhteydenUusiTila));
+            if (yhteydenUusiTila == "Connected" && !kaynnissa)
+            {
+                Dispatcher.BeginInvoke(new Action(() => button2.IsEnabled = true));
+                Dispatcher.BeginInvoke(new Action(() => button4.IsEnabled = false));
+            }
+            if (yhteydenUusiTila != "Connected")
+            {
+                Dispatcher.BeginInvoke(new Action(() => button2.IsEnabled = false));
+                Dispatcher.BeginInvoke(new Action(() => button4.IsEnabled = true));
+            }
         }
 
         private void PaivitaTila(string tila)
@@ -154,6 +165,10 @@ namespace Harkkatyö
             {                
                 bgv1.RunWorkerAsync();
                 kaynnissa = true;
+                button1.IsEnabled = false;
+                button2.IsEnabled = false;
+
+                button3.IsEnabled = true;
             }
             
         }
@@ -175,6 +190,10 @@ namespace Harkkatyö
                 logiikka.pysaytaSekvenssi();
                 kaynnissa = false;
                 bgv1.CancelAsync();
+                button1.IsEnabled = true;
+                button2.IsEnabled = true;
+
+                button3.IsEnabled = false;
             }
             
         }
