@@ -13,7 +13,8 @@ using static Tuni.MppOpcUaClientLib.MppClient;
 using Harkkatyö;
 using System.Threading;
 
-// public delegate void ProcessItemsChangedEventHandler(object source, ProcessItemChangedEventArgs args);
+//public delegate void ProcessItemsChangedEventHandler(object source, ProcessItemChangedEventArgs args);
+// public delegate void ConnectionStatusEventHandler(object source, ConnectionStatusEventArgs args);
 //public delegate void OmaEventHandlerInt(object source, MuuttuneetEventInt m);
 //public delegate void OmaEventHandlerDouble(object source, MuuttuneetEventDouble m);
 // public delegate void OmaEventHandlerBool(object source, MuuttuneetEventBool m);
@@ -25,7 +26,7 @@ namespace Harkkatyö
     {
         static private ConnectionParamsHolder parametrit = new ConnectionParamsHolder("opc.tcp://127.0.0.1:8087");
 
-        private MppClient asiakas = new MppClient(parametrit);
+        private MppClient asiakas;
 
         // public event ProcessItemsChangedEventHandler JokinMuuttui;
         /*
@@ -35,7 +36,54 @@ namespace Harkkatyö
         public event OmaEventHandlerBool MikaMuuttuiBool;
         */
         public event OmaEventHandler MikaMuuttui;
+        public event YhteysEventHandler YhteysMuuttui;
 
+        private string yhteydenTila = String.Empty;
+
+        private bool initKutsuttu;
+
+        private void YhteydenTilaMuuttui(object source, ConnectionStatusEventArgs args) 
+        {
+            ConnectionStatusInfo muuttunutYhteydenTila = args.StatusInfo;
+            yhteydenTila = muuttunutYhteydenTila.FullStatusString;
+            Trace.WriteLine("tila: " + yhteydenTila);
+            if (yhteydenTila == null)
+            {
+                yhteydenTila = "Unknown";
+            }
+            if (yhteydenTila == "ConnectionErrorClientReconnect")
+            {
+                asiakas.Dispose();
+                initKutsuttu = false;
+            }
+            YhteysMuuttui(yhteydenTila);
+        }
+
+        public void YhdistaProsessiin()
+        {
+            Trace.WriteLine("yhteyden tila ennen yhdistämistä: " + yhteydenTila);
+
+            if (yhteydenTila == "ConnectionErrorClientReconnect")
+            {
+                asiakas.Dispose();
+                initKutsuttu = false;
+            }
+
+            if (yhteydenTila != "Connected" || yhteydenTila != "Connecting") 
+            {
+                asiakas = new MppClient(parametrit);
+                asiakas.ConnectionStatus += new ConnectionStatusEventHandler(YhteydenTilaMuuttui);
+
+                if (!initKutsuttu)
+                {
+                    ClientInit();
+                    initKutsuttu = true;
+                }
+                
+                
+            }
+            Trace.Write("Yhteyden tila yhdistämisen jälkeen: " + yhteydenTila);
+        }
 
         public void MuutaOnOff(string nimi, bool totuus)
         {
@@ -53,15 +101,24 @@ namespace Harkkatyö
         public void ClientInit()
         {
             // Initoidaan client, jonka jälkeen lisätään seurattavat arvot serverin tietoon ja tilataan event ja määritellään event handler
-            asiakas.Init();
-            AddSubscriptions();
-            Thread thread1 = new Thread(MuutaThread);
-            thread1.Start();
+            try
+            {
+                asiakas.Init();
+                AddSubscriptions();
+                Thread thread1 = new Thread(MuutaThread);
+                thread1.Start();
+            }
+            catch (Exception e) 
+            {
+                Trace.WriteLine("häikkää yhdistämisessä");
+            }
+            
 
         }
         private void MuutaThread()
         {
             asiakas.ProcessItemsChanged += new ProcessItemsChangedEventHandler(MuutaMuuttuneet);
+            //asiakas.ConnectionStatus += new ConnectionStatusEventHandler(YhteydenTilaMuuttui);
             // Thread.Sleep(500);
         }
         

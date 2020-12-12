@@ -13,6 +13,7 @@ namespace Harkkatyö
 {
 
     public delegate void OmaEventHandler(object source, MuuttuneetEvent m);
+    public delegate void YhteysEventHandler(string yhteydenUusiTila);
 
     class Toimintalogiikka
     {
@@ -23,7 +24,7 @@ namespace Harkkatyö
         private Saadin V104Saadin = new Saadin(false, -0.01*0.5);
 
         // Booleanit joilla varmistetaan, ettei clientiä voi initoida tai prosessia käynnistää, jos ne on jo tehty eikä niitä ole sammutettu
-        private bool clientStatus = false;
+        private string clientStatus;
         private bool kaynnistetty = false;
 
         // Boolean, johon tallennetaan tieto siitä onko prosessi käynnissä
@@ -40,13 +41,24 @@ namespace Harkkatyö
         // Alustetaan prosessi, otetaan yhteys simulaattoriin ja käynnistetään thread jota käytetään prosessin tilan seuraamiseen
         public event PaivitaTiedot paivita;
         public event TilaVaihtui tilaVaihtui;
-        
+        public event YhteydenTilaVaihtui yhteydenTilaVaihtui;
+
         public void AlustaProsessi()
         {
-            if (!clientStatus)
+            if (clientStatus != "Connected" || clientStatus != "Connecting")
             {
-                prosessi.ClientInit();
-                clientStatus = true;
+                prosessi.YhteysMuuttui += new YhteysEventHandler(YhteysMuuttui);
+                prosessi.YhdistaProsessiin();
+
+                Trace.WriteLine("tila logiikassa yhdistämisen jälkeen: " + clientStatus);
+
+                if (clientStatus == "Connected")
+                {
+                    PaivitaTiedot handler = paivita;
+                    handler?.Invoke();
+                }
+                
+
             }
 
             if (!kaynnistetty)
@@ -55,6 +67,14 @@ namespace Harkkatyö
                 thread2.Start();
                 kaynnistetty = true;
             }
+        }
+
+        private void YhteysMuuttui(string yhteydenUusiTila)
+        {
+            Trace.WriteLine("logiikka sai tiedon yhteyden tila vaihtumisesta");
+            clientStatus = yhteydenUusiTila;
+            YhteydenTilaVaihtui handler = yhteydenTilaVaihtui;
+            handler?.Invoke(clientStatus);
         }
 
         // Käynnistetään sekvenssi
@@ -107,7 +127,11 @@ namespace Harkkatyö
         {
             // Lämmittimen sammuttaminen on tällä hetkellä mukana vain testaustarkoituksessa
             // prosessi.MuutaOnOff("E100", false);
+
+            // Muutetaan sekvenssin tilaksi false ja palautetaan prosessin tila kohtaan 1
             sekvenssiKaynnissa = false;
+            tila = 1;
+
             // Kaikkien venttiilien, pumppujen ja lämmittimien sulkeminen välittömästi
             EM1_OP3();
             EM1_OP4();
@@ -123,8 +147,7 @@ namespace Harkkatyö
 
             // Digesterin paineen poistaminen tässä vaiheessa? Jätän sen komennon vielä kommentteihin
             //EM3_OP8();
-            // Palautetaan prosessin tila kohtaan 1
-            tila = 1;
+            
             TilaVaihtui handler = tilaVaihtui;
             handler?.Invoke("Idle");
         }
@@ -374,6 +397,8 @@ namespace Harkkatyö
 
             // Muutetaan prosessin tila takaisin arvoon 1
             tila = 1;
+            TilaVaihtui handler1 = tilaVaihtui;
+            handler1?.Invoke("Idle");
         }
 
         // Varsinaiset metodit, joilla prosessin eri vaiheet toteutetaan

@@ -10,6 +10,7 @@
         <Button Content="Muokkaa parametreja" HorizontalAlignment="Left" Margin="659,484,0,0" VerticalAlignment="Top" Width="123" Click="Button_Click_1"/>
         <Button Content="Käynnistä sekvenssi" HorizontalAlignment="Left" Margin="413,484,0,0" VerticalAlignment="Top" Width="118" Click="Button_Click" RenderTransformOrigin="0.483,3.968"/>
         <Button Content="Keskeytä sekvenssi" HorizontalAlignment="Left" Margin="536,484,0,0" VerticalAlignment="Top" Width="118" Click="Button_Click_2"/>
+        <Button Content="Yhdistä prosessiin" HorizontalAlignment="Left" Margin="290,484,0,0" VerticalAlignment="Top" Width="118" Click="Button_Click_3"/>
         <Grid Width="700">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
@@ -120,13 +121,21 @@
             </Grid>
         </Grid>
 
-        <Grid Height="30" Width="350" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="15">
+        <Grid Height="30" Width="250" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="15">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
+                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Column="0" Text="Sekvenssin nykyinen tila" VerticalAlignment="Center" HorizontalAlignment="Center"/>
             <TextBox Grid.Column="1" x:Name="sekvenssinTila" TextAlignment="Center" Text="Idle"/>
+        </Grid>
+        <Grid Height="30" Width="250" HorizontalAlignment="Left" Margin="15,439,0,50">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="Yhteyden tila" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            <TextBox Grid.Column="1" x:Name="yhteydenTila" TextAlignment="Center" Text="Unknown"/>
         </Grid>
 
     </Grid>

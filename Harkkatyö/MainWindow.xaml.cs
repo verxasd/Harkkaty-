@@ -24,6 +24,7 @@ namespace Harkkatyö
 
     public delegate void PaivitaTiedot();
     public delegate void TilaVaihtui(string tila);
+    public delegate void YhteydenTilaVaihtui(string yhteydenTila);
     public partial class MainWindow : Window
     {
         
@@ -41,7 +42,7 @@ namespace Harkkatyö
         public MainWindow()
         {
             InitializeComponent();
-            logiikka.AlustaProsessi();
+            
             
             
             // Muutetaan progress barit täyttymään alhaalta ylös
@@ -54,6 +55,7 @@ namespace Harkkatyö
 
             logiikka.paivita += PaivitaMetodi;
             logiikka.tilaVaihtui += PaivitaTila;
+            logiikka.yhteydenTilaVaihtui += PaivitaYhteydenTila;
 
             // Luodaan uusi BackgroundWorker
             bgv1 = new BackgroundWorker();
@@ -63,6 +65,12 @@ namespace Harkkatyö
             bgv1.WorkerSupportsCancellation = true;
 
             
+        }
+
+        private void PaivitaYhteydenTila(string yhteydenUusiTila)
+        {
+            Trace.WriteLine("yhteyden tila muuttui");
+            Dispatcher.BeginInvoke(new Action(() => yhteydenTila.Text = yhteydenUusiTila));
         }
 
         private void PaivitaTila(string tila)
@@ -209,6 +217,11 @@ namespace Harkkatyö
             T300PBlampo.Maximum = 60;
             T300PBlampo.Value = T300lampo;
             T300LampoNum.Text = T300lampo.ToString("F2") + " °C";
+        }
+
+        private void Button_Click_3(object sender, RoutedEventArgs e)
+        {
+            logiikka.AlustaProsessi();
         }
     }
 }
