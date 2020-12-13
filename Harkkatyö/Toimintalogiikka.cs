@@ -110,9 +110,6 @@ namespace Harkkatyö
         {
             sekvenssiKaynnissa = true;
 
-            // Muutetaan parametrit koekäyttöä varten tämän kautta
-            MuutaParametreja(20, 25, 15, 250);
-
             // Tulostetaan muutetut parametrit outputiin testitarkoituksessa
             Trace.WriteLine(keittopaine);
             Trace.WriteLine(keittoaika);
