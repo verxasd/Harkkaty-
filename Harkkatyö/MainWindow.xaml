@@ -55,7 +55,7 @@
                 <TextBlock Grid.Row="1" Text="300" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.ColumnSpan="2"/>
                 <TextBlock Grid.Row="3" Text="0" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.ColumnSpan="2"/>
                 <ProgressBar Grid.Row="2" Name="T200PB" Grid.ColumnSpan="2"  Width="100" Height="300" ValueChanged="T200PB_ValueChanged" Orientation="Vertical"/>
-                <TextBlock Grid.Row="0"  VerticalAlignment="Center" HorizontalAlignment="Center" Grid.ColumnSpan="2"><Run Text="L200 "/><Run Text="Pinankorkeus"/></TextBlock>
+                <TextBlock Grid.Row="0"  VerticalAlignment="Center" HorizontalAlignment="Center" Grid.ColumnSpan="2"><Run Text="L200 "/><Run Text="Pinnankorkeus"/></TextBlock>
                 <TextBlock Grid.Row="4" Text="Korkeus"  VerticalAlignment="Center" HorizontalAlignment="Center"/>
                 <TextBox Grid.Row="4" Grid.Column="1" x:Name="T200KorkeusNum"/>
             </Grid>
