@@ -210,7 +210,6 @@ namespace Harkkatyö
 
         private void YhteysMuuttui(string yhteydenUusiTila)
         {
-            Trace.WriteLine("logiikka sai tiedon yhteyden tila vaihtumisesta");
             clientStatus = yhteydenUusiTila;
 
             if (clientStatus == "Disconnected")
