@@ -5,6 +5,10 @@ VisualStudioVersion = 16.0.30517.126
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Harkkatyö", "Harkkatyö\Harkkatyö.csproj", "{DE2FCDB9-4A25-44B6-9798-9D5ED78589FC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SaadinTestaus", "TestausProjekti\SaadinTestaus.csproj", "{12BDC185-96A9-499F-AD07-8FB488949051}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToimintalogiikkaTestaus", "ToimintalogiikkaTestaus\ToimintalogiikkaTestaus.csproj", "{7D436911-2B8B-4FBE-B4B8-515467D1E3A0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{DE2FCDB9-4A25-44B6-9798-9D5ED78589FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DE2FCDB9-4A25-44B6-9798-9D5ED78589FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DE2FCDB9-4A25-44B6-9798-9D5ED78589FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12BDC185-96A9-499F-AD07-8FB488949051}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12BDC185-96A9-499F-AD07-8FB488949051}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12BDC185-96A9-499F-AD07-8FB488949051}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12BDC185-96A9-499F-AD07-8FB488949051}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D436911-2B8B-4FBE-B4B8-515467D1E3A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D436911-2B8B-4FBE-B4B8-515467D1E3A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D436911-2B8B-4FBE-B4B8-515467D1E3A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D436911-2B8B-4FBE-B4B8-515467D1E3A0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

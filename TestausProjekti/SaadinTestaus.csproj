@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{DE2FCDB9-4A25-44B6-9798-9D5ED78589FC}</ProjectGuid>
+    <ProjectGuid>{12BDC185-96A9-499F-AD07-8FB488949051}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>Harkkatyö</RootNamespace>
-    <AssemblyName>Harkkatyö</AssemblyName>
+    <RootNamespace>TestausProjekti</RootNamespace>
+    <AssemblyName>TestausProjekti</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -24,7 +24,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\Harkkatyö.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -47,15 +46,6 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
-    <Reference Include="Tuni.MppOpcUaClientLib">
-      <HintPath>..\MppOpcUaClientLib_dll\Tuni.MppOpcUaClientLib.dll</HintPath>
-    </Reference>
-    <Reference Include="UnifiedAutomation.UaBase">
-      <HintPath>..\MppOpcUaClientLib_dll\UnifiedAutomation.UaBase.dll</HintPath>
-    </Reference>
-    <Reference Include="UnifiedAutomation.UaClient">
-      <HintPath>..\MppOpcUaClientLib_dll\UnifiedAutomation.UaClient.dll</HintPath>
-    </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -65,18 +55,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Mittaus.cs" />
-    <Compile Include="MuutaParametreja.xaml.cs">
-      <DependentUpon>MuutaParametreja.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="MuuttuneetEvent.cs" />
-    <Compile Include="MuuttuneetEventBool.cs" />
-    <Compile Include="MuuttuneetEventDouble.cs" />
-    <Compile Include="MuuttuneetEventInt.cs" />
-    <Compile Include="Prosessi.cs" />
-    <Compile Include="Saadin.cs" />
-    <Compile Include="Toimintalogiikka.cs" />
-    <Compile Include="Tuni\MppOpcUaClientLib\ConnectionParametersHolder.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -89,10 +67,6 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="MuutaParametreja.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -119,9 +93,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

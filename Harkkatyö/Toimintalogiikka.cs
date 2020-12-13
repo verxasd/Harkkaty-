@@ -11,8 +11,16 @@ using System.Threading;
 
 namespace Harkkatyö
 {
-
+    /// <summary>
+    /// Tätä event handleria käytetään omien eventien käsittelyyn silloin, kun prosessin muistissa olevat mitatut arvot muuttuvat
+    /// </summary>
+    /// <param name="source">Source</param>
+    /// <param name="m">Event argumentit omalle eventille. Dictionary, missä avaimena on string ja arvona int</param>
     public delegate void OmaEventHandler(object source, MuuttuneetEvent m);
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="yhteydenUusiTila"></param>
     public delegate void YhteysEventHandler(string yhteydenUusiTila);
 
     class Toimintalogiikka
