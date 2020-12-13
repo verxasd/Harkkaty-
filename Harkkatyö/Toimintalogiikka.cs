@@ -18,26 +18,33 @@ namespace Harkkatyö
     /// <param name="m">Event argumentit omalle eventille. Dictionary, missä avaimena on string ja arvona int</param>
     public delegate void OmaEventHandler(object source, MuuttuneetEvent m);
     /// <summary>
-    /// 
+    /// Tätä event handleria käytetään yhteyden tilasta kertovan eventin käsittelyyn silloin, kun prosessin tiedossa oleva yhteyden tila muuttuu
     /// </summary>
-    /// <param name="yhteydenUusiTila"></param>
+    /// <param name="yhteydenUusiTila">Yhteyden uusi tila merkkijonona, FullStatusString muotoisena OPC UA mukaan</param>
     public delegate void YhteysEventHandler(string yhteydenUusiTila);
 
+    /// <summary>
+    /// Tällä luokalla ohjataan prosessin toimintaa sekvenssin eri vaiheiden mukaan.
+    /// </summary>
     class Toimintalogiikka
     {
+        // Luodaan uusi instanssi Prosessi-luokasta, jolla hallitaan sovelluksen ja simulaattorin välistä yhteyttä
         private Prosessi prosessi = new Prosessi();
 
         // Säätimet lämpötilan ja paineen säätämiseen
         private Saadin E100Saadin = new Saadin(true, 10);
         private Saadin V104Saadin = new Saadin(false, -0.01*0.5);
 
-        // Booleanit joilla varmistetaan, ettei clientiä voi initoida tai prosessia käynnistää, jos ne on jo tehty eikä niitä ole sammutettu
+        // String, johon tallennetaan yhteyden tila merkkijonona
         private string clientStatus;
+
+        // Boolean jolla varmistetaan, ettei prosessia käynnistää, jos ne on jo tehty eikä sitä ole sammutettu
         private bool kaynnistetty = false;
 
         // Boolean, johon tallennetaan tieto siitä onko prosessi käynnissä
         private bool sekvenssiKaynnissa = false;
-
+        
+        // Sekvenssin parametrit, jotka asetetaan julkisella metodilla MuutaParametreja
         private double keittoaika;
         private double keittolampotila;
         private double kyllastysaika;
@@ -45,12 +52,25 @@ namespace Harkkatyö
 
         private int LI100SafetyLevel = 100;
 
-        // Julkiset metodit, joita voidaan kutsua käyttöliittymästä
-        // Alustetaan prosessi, otetaan yhteys simulaattoriin ja käynnistetään thread jota käytetään prosessin tilan seuraamiseen
+        /// <summary>
+        /// Event, joka nostetaan kun toimintalogiikan muistissa oleviin prosessin mitattuihin arvoihin tehdään muutoksia
+        /// </summary>
         public event PaivitaTiedot paivita;
+        /// <summary>
+        /// Event, joka nostetaan sekvenssin vaiheen muuttuessa
+        /// </summary>
         public event TilaVaihtui tilaVaihtui;
+        /// <summary>
+        /// Event, joka nostetaan yhteyden tilan muuttuessa
+        /// </summary>
         public event YhteydenTilaVaihtui yhteydenTilaVaihtui;
 
+        // Julkiset metodit, joita voidaan kutsua käyttöliittymästä
+        
+        /// <summary>
+        /// Tällä metodilla käsketään prosessia ottamaan yhteys simulaattoriin, jos yhteyttä ei vielä ole.
+        /// Jos sekvenssin tila yhteyttä muodostaessa on jokin muu kuin Impregnation, pysäytetään sekvenssi.
+        /// </summary>
         public void AlustaProsessi()
         {
             if (clientStatus != "Connected" || clientStatus != "Connecting")
@@ -68,42 +88,30 @@ namespace Harkkatyö
                     if (tila != 1)
                     {
                         kaynnistetty = false;
-                        pysaytaSekvenssi();
+                        PysaytaSekvenssi();
                     }
                 }
-                
-
             }
-
             if (!kaynnistetty)
             {
-                Thread thread2 = new Thread(ProsessiKaynnissa);
-                thread2.Start();
+                // Tilataan event prosessin mittauksien muuttumisesta ja määritellään sille event handler
+                prosessi.MikaMuuttui += new OmaEventHandler(PaivitaArvot);
                 kaynnistetty = true;
             }
         }
 
-        private void YhteysMuuttui(string yhteydenUusiTila)
-        {
-            Trace.WriteLine("logiikka sai tiedon yhteyden tila vaihtumisesta");
-            clientStatus = yhteydenUusiTila;
-
-            if (clientStatus == "Disconnected")
-            {
-                pysaytaSekvenssi();
-            }
-            
-            YhteydenTilaVaihtui handler = yhteydenTilaVaihtui;
-            handler?.Invoke(clientStatus);
-        }
+        
 
         // Käynnistetään sekvenssi
-        public void kaynnistaSekvenssi()
+        /// <summary>
+        /// Tällä metodilla luodaan oma thread sekvenssille ja käynnistetään sekvenssi
+        /// </summary>
+        public void KaynnistaSekvenssi()
         {
             sekvenssiKaynnissa = true;
 
             // Muutetaan parametrit koekäyttöä varten tämän kautta
-            muutaParametreja(20, 25, 15, 250);
+            MuutaParametreja(20, 25, 15, 250);
 
             // Tulostetaan muutetut parametrit outputiin testitarkoituksessa
             Trace.WriteLine(keittopaine);
@@ -114,7 +122,11 @@ namespace Harkkatyö
             Thread thread3 = new Thread(Kaynnista);
             thread3.Start();
         }
-
+        /// <summary>
+        /// Metodi palauttaa toimintalogiikan muistista halutun parametrin arvon. Jos parametria ei ole olemassa muistissa, funktio palauttaa -1.
+        /// </summary>
+        /// <param name="v">Mitattavan arvon nimi merkkijonona</param>
+        /// <returns>Mitattava arvo doublena, jos se on olemassa. Jos sitä ei ole olemassa, palautetaan -1</returns>
         internal double PalautaDouble(string v)
         {
             double luku;
@@ -128,7 +140,11 @@ namespace Harkkatyö
             }
             return luku;
         }
-
+        /// <summary>
+        /// Metodi palauttaa toimintalogiikan muistista halutun parametrin arvon. Jos parametria ei ole olemassa muistissa, funktio palauttaa -1.
+        /// </summary>
+        /// <param name="v">Mitattavan arvon nimi merkkijonona</param>
+        /// <returns>Mitattava arvo kokonaislukuna, jos se on olemassa. Jos sitä ei ole olemassa, palautetaan -1</returns>
         internal int PalautaInt(string v)
         {
             int luku;
@@ -142,8 +158,11 @@ namespace Harkkatyö
             }
             return luku;
         }
-
-        public void pysaytaSekvenssi()
+        /// <summary>
+        /// Metodi sulkee kaikki venttiilit, pysäyttää pumput ja sammuttaa lämmitysvastuksen. Prosessin tila palautetaan alkutilaan.
+        /// Lopuksi ilmoitetaan käyttöliittymälle invokella prosessin tilan muuttumisesta.
+        /// </summary>
+        public void PysaytaSekvenssi()
         {
             // Lämmittimen sammuttaminen on tällä hetkellä mukana vain testaustarkoituksessa
             // prosessi.MuutaOnOff("E100", false);
@@ -172,8 +191,14 @@ namespace Harkkatyö
             handler?.Invoke("Idle");
         }
         
-        // Muutetaan parametrit käyttöliittymästä käsin
-        public void muutaParametreja(double keittoaikaA, double keittolampotilaA, double kyllastysaikaA, int keittopaineA)
+        /// <summary>
+        /// Metodilla muutetaan sekvenssin parametrin toimintalogiikan muistiin
+        /// </summary>
+        /// <param name="keittoaikaA">Asetettava keittoaika doublena</param>
+        /// <param name="keittolampotilaA">Asetettava keittolämpötila doublena</param>
+        /// <param name="kyllastysaikaA">Asetettava kyllästysaika doublena</param>
+        /// <param name="keittopaineA">Asetettava keittopaine doublena</param>
+        public void MuutaParametreja(double keittoaikaA, double keittolampotilaA, double kyllastysaikaA, int keittopaineA)
         {
             this.keittoaika = keittoaikaA;
             this.keittolampotila = keittolampotilaA;
@@ -182,13 +207,22 @@ namespace Harkkatyö
         }
 
         // Yksityiset metodit alkavat
-        
-        // Tilataan event prosessin arvojen muuttumisesta
-        private void ProsessiKaynnissa()
+
+        private void YhteysMuuttui(string yhteydenUusiTila)
         {
-            prosessi.MikaMuuttui += new OmaEventHandler(PaivitaArvot);
+            Trace.WriteLine("logiikka sai tiedon yhteyden tila vaihtumisesta");
+            clientStatus = yhteydenUusiTila;
+
+            if (clientStatus == "Disconnected")
+            {
+                PysaytaSekvenssi();
+            }
+
+            YhteydenTilaVaihtui handler = yhteydenTilaVaihtui;
+            handler?.Invoke(clientStatus);
         }
 
+        // Metodi, jolla kutsutaan prosessin seuraavaa vaihetta nykyisen tilan perusteella
         private void Kaynnista()
         {
             // Normaali toimintasykli
@@ -214,14 +248,20 @@ namespace Harkkatyö
             }
         }
 
-        // Sekvenssin runko, operaatiot kuitenkin omiin metodeihin
-        // Sekvenssin runkometodeille ehkä kuitenkin jokin palautusarvo prosessin tilan seuraamiseksi? Esim bool siitä onko tilanne valmis vai ei?
+        // Sekvenssin runko, operaatiot ovat omissa metodeissaan
+
+        // Sekvenssin eri vaiheet on toteutettu tehtävänannon kanssa annetun PFC-kaavion mukaisesti, käyttäen PFC-kaavion mukaisia operaatioita
+        // Sekvenssin vaiheiden nimet ja eri operaatioiden nimet noudattavat PFC-kaaviota
+
+        // Jokaisen sekvenssin vaiheen aluksi nostetaan event sekvenssin tilan muuttumisesta ja ilmoitetaan siitä invokella käyttöliittymälle
+
+        // Metodilla toteutetaan Impregration PFC-kaavion mukaisesti
         private void Impregnation() 
         {
             TilaVaihtui handler = tilaVaihtui;
             handler?.Invoke("Impregnation");
             
-            Trace.WriteLine("Aloitetaan vaihe 1");
+            // Luetaan kyllästysaika metodin sisäiseen muuttujaan
             double impregnationTime = kyllastysaika;
             bool LS300P = mitattavatBool["LS+300"];
 
@@ -229,14 +269,17 @@ namespace Harkkatyö
             EM2_OP1();
             EM5_OP1();
             EM3_OP2();
-
+            // 
             if (!LS300P) 
             {                
                 while (!LS300P && sekvenssiKaynnissa == true)
                 {                    
-                    Trace.WriteLine("LS300 ei ole valmis");
-                    LS300P = mitattavatBool["LS+300"];                    
-                    Thread.Sleep(500);
+                    LS300P = mitattavatBool["LS+300"];
+                    // Pidetään yhden jaksonajan viive vain siinä tapauksessa, että ylärajaa ei ole vielä saavutettu
+                    if (!LS300P) 
+                    {
+                        Thread.Sleep(500);
+                    }
                 }
             }
 
@@ -245,10 +288,9 @@ namespace Harkkatyö
             Trace.WriteLine("Käynnistetään kyllästysajan laskuri");
             Trace.WriteLine(impregnationTime);
             // Pistetään laskuri rullaamaan, kun yläraja on saavutettu            
-            while (impregnationTime > 0.0 && sekvenssiKaynnissa == true)
+            while (impregnationTime >= 0.5 && sekvenssiKaynnissa == true)
             {                   
                 impregnationTime -= 0.5;
-                Trace.WriteLine("Kyllästysaikaa jäljellä " + impregnationTime.ToString());
                 Thread.Sleep(500);
 
             }
@@ -257,26 +299,24 @@ namespace Harkkatyö
             EM2_OP2();
             EM5_OP3();
             EM3_OP6();
-            
-            // Pidetään threadia 0,5 s levossa ennen paineen poistamista
-            Thread.Sleep(500);
-            
+
             // EM3_OP8
             EM3_OP8();
-
+            
+            // Muutetaan sekvenssin tila seuraavaan vaiheeseen vain siinä tapauksessa, että sekvenssiä ei ole keskeytetty
             if (sekvenssiKaynnissa)
             {
                 // Lopuksi muutetaan tilaa isommaksi ja kutsutaan uudestaan sekvenssin käynnistämistä
                 tila += 1;
                 Kaynnista();
             }
-
         }
+        // Metodilla toteutetaan Black Liquor Fill PFC-kaavion mukaisesti.
         private void BlackLiquorFill() 
         {
             TilaVaihtui handler = tilaVaihtui;
             handler?.Invoke("Black Liquor Fill");
-            Trace.WriteLine("Aloitetaan vaihe 2");
+
             int LI400 = mitattavatInt["LI400"];
             // LI400 rajana on LI400 < 35 mm 
 
@@ -285,18 +325,23 @@ namespace Harkkatyö
             EM5_OP1();
             EM4_OP1();
 
+            // Jatketaan pinnankorkeuden seuraamista ja edeltäviä operaatioita, kunnes LI400 on halutussa arvossa tai sekvenssi keskeytetään
             while (LI400 > 35 && sekvenssiKaynnissa == true) 
             {
                 LI400 = mitattavatInt["LI400"];
-                Thread.Sleep(500);
+                // Pidetään yhden syklin tauko vain siinä tapauksessa, että alarajaa ei ole vielä saavutetta
+                if (LI400 > 35)
+                {
+                    Thread.Sleep(500);
+                }
             }
-            // LI400
 
             // EM3_OP6, EM5_OP3, EM4_OP2
             EM3_OP6();
             EM5_OP3();
             EM4_OP2();
 
+            // Muutetaan sekvenssin tila seuraavaan vaiheeseen vain siinä tapauksessa, että sekvenssiä ei ole keskeytetty
             if (sekvenssiKaynnissa)
             {
                 // Lopuksi muutetaan tilaa isommaksi ja kutsutaan uudestaan sekvenssin käynnistämistä
@@ -304,6 +349,7 @@ namespace Harkkatyö
                 Kaynnista();
             }
         }
+        // Metodilla toteutetaan White Liquor Fill PFC-kaavion mukaisesti
         private void WhiteLiquorFill()
         {
             TilaVaihtui handler = tilaVaihtui;
@@ -318,11 +364,14 @@ namespace Harkkatyö
             EM1_OP2();
 
             // Tarkastetaan syklin välein nestepintojen taso, pysäytetään kaikki jos LI100 pinta laskee liian alas
-            while (LI400 <= 80 && sekvenssiKaynnissa == true)
+            while (LI400 < 80 && sekvenssiKaynnissa == true)
             {
                 LI100Safety();
                 LI400 = mitattavatInt["LI400"];
-                Thread.Sleep(500);
+                if (LI400 < 80)
+                {
+                    Thread.Sleep(500);
+                }
             }
             // LI400
 
@@ -330,6 +379,7 @@ namespace Harkkatyö
             EM3_OP6();
             EM1_OP4();
 
+            // Muutetaan sekvenssin tila seuraavaan vaiheeseen vain siinä tapauksessa, että sekvenssiä ei ole keskeytetty
             if (sekvenssiKaynnissa)
             {
                 // Lopuksi muutetaan tilaa isommaksi ja kutsutaan uudestaan sekvenssin käynnistämistä
@@ -354,7 +404,11 @@ namespace Harkkatyö
             {
                 LI100Safety();
                 TI300 = mitattavatDouble["TI300"];
-                Thread.Sleep(500);
+                // Pidetään viive vain siinä tapauksessa, että keittolämpötilaa ei ole vielä saavutettu
+                if (TI300 < keittolampotila)
+                {
+                    Thread.Sleep(500);
+                }                
             }
             // TI300 lämpenee tarpeeksi
             // EM3_OP1, EM1_OP2
@@ -362,7 +416,7 @@ namespace Harkkatyö
             EM1_OP2();
             
             // U1_OP1, U1_OP2
-            while (cookingTime > 0  && sekvenssiKaynnissa == true)
+            while (cookingTime >= 0.5  && sekvenssiKaynnissa == true)
             {
                 // Käynnistetään paineen ja lämpötilan säätö. Keittoaika ei kuitenkaan lähde laskemaan, ennen kun keittopaine on saavutettu
                 bool saavutettu = U1_OP1();
@@ -381,11 +435,10 @@ namespace Harkkatyö
             EM3_OP6();
             EM1_OP4();
 
-            // Pidetään threadia levossa 0,5 s ennen paineen poistamista
-            Thread.Sleep(500);
             // EM3_OP8
             EM3_OP8();
 
+            // Muutetaan sekvenssin tila seuraavaan vaiheeseen vain siinä tapauksessa, että sekvenssiä ei ole keskeytetty
             if (sekvenssiKaynnissa)
             {
                 // Lopuksi muutetaan tilaa isommaksi ja kutsutaan uudestaan sekvenssin käynnistämistä
@@ -408,7 +461,11 @@ namespace Harkkatyö
             while (LS300N && sekvenssiKaynnissa == true)
             {
                 LS300N = mitattavatBool["LS-300"];
-                Thread.Sleep(500);
+                // Pidetään viive vain jos alarajaa ei ole saavutettu
+                if (LS300N)
+                {
+                    Thread.Sleep(500);
+                }                
             }
             // LS-300 deaktivoituu
             // EM5_OP4, EM3_OP7
@@ -417,6 +474,7 @@ namespace Harkkatyö
 
             // Muutetaan prosessin tila takaisin arvoon 1
             tila = 1;
+            // Nostetaan event ja ilmoitetaan käyttöliittymälle invokella siitä, että prosessi on jälleen idlessä
             TilaVaihtui handler1 = tilaVaihtui;
             handler1?.Invoke("Idle");
         }
@@ -582,7 +640,7 @@ namespace Harkkatyö
                 Trace.WriteLine("Paine poikkesi sallitusta");
                 Trace.WriteLine("Paine: " + PI300.ToString() + ", virtaus " + mitattavatDouble["FI100"].ToString());
                 Trace.WriteLine("Venttiilin uusi ohjaus: " + ohjaus);
-                pysaytaSekvenssi();
+                PysaytaSekvenssi();
             }
             return saavutettu;
         }
@@ -627,43 +685,36 @@ namespace Harkkatyö
         {
             if (mitattavatInt["LI100"] < LI100SafetyLevel) 
             {
-                pysaytaSekvenssi();
+                PysaytaSekvenssi();
             }
         }
 
         // Metodi, jota kutsutaan event handlerilla eventin noustessa. Metodilla päivitetään päivitetyt arvot toimintalogiikan tietoon
         private void PaivitaArvot(object source, MuuttuneetEvent m)
         {
-            DateTime time = DateTime.Now;
-            Trace.WriteLine("aika: " + time.ToString("HH: mm:ss.fff") + " toimintalogiikka sai tiedon muutoksista");
             Dictionary<string, int> muuttuneet = m.PalautaArvot();
             foreach (string avain in muuttuneet.Keys)
             {
                 if (muuttuneet[avain] == 0) 
                 {
                     mitattavatBool[avain] = prosessi.PalautaBool(avain);
-                    //Trace.WriteLine(avain.ToString() + " " + mitattavatBool[avain].ToString());
                 }
                 if (muuttuneet[avain] == 1)
                 {
                     mitattavatDouble[avain] = prosessi.PalautaDouble(avain);
-                    //Trace.WriteLine(avain.ToString() + " " + mitattavatDouble[avain].ToString());
                 }
                 if (muuttuneet[avain] == 2)
                 {
                     mitattavatInt[avain] = prosessi.PalautaInt(avain);
-                    //Trace.WriteLine(avain.ToString() + " " + mitattavatInt[avain].ToString());
                 }
             }
-
+            // Lopuksi nostetaan event ja ilmoitetaan invokella käyttöliittymälle muuttuneista mittauksista
             PaivitaTiedot handler = paivita;
             handler?.Invoke();
-
         }
 
         // Prosessin tila. 1 = Impregnation, 2 = BlackLiquorFill, 3 = WhiteLiquorFill, 4 = Cooking, 5 = Discharge
         private int tila = 1;
-        // public bool tila;
 
         // Mitattavat suureet omissa dictionaryissaan, jokaiselle tyypille oma dictionary
         private Dictionary<string, bool> mitattavatBool = new Dictionary<string, bool>() {

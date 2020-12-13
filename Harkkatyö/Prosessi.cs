@@ -13,44 +13,45 @@ using static Tuni.MppOpcUaClientLib.MppClient;
 using Harkkatyö;
 using System.Threading;
 
-//public delegate void ProcessItemsChangedEventHandler(object source, ProcessItemChangedEventArgs args);
-// public delegate void ConnectionStatusEventHandler(object source, ConnectionStatusEventArgs args);
-//public delegate void OmaEventHandlerInt(object source, MuuttuneetEventInt m);
-//public delegate void OmaEventHandlerDouble(object source, MuuttuneetEventDouble m);
-// public delegate void OmaEventHandlerBool(object source, MuuttuneetEventBool m);
-
 namespace Harkkatyö
 {
-
+    /// <summary>
+    /// Tällä luokalla otetaan yhteys simulaattoriin, luetaan simulaattorilla muuttuneet arvot luokan omaan muistiin ja ilmoitetaan toimintalogiikalle,
+    /// jos yhteyden tilassa tai mitattavissa arvoissa tapahtuu muutoksia
+    /// </summary>
     class Prosessi : Mittaus
     {
+        // Muuttuja, johon yhteysparametrit tallennetaan
         static private ConnectionParamsHolder parametrit = new ConnectionParamsHolder("opc.tcp://127.0.0.1:8087");
 
+        // Alustetaan asiakas-client
         private MppClient asiakas;
 
-        // public event ProcessItemsChangedEventHandler JokinMuuttui;
-        /*
-        // Lisätään omat event handlerit eri tietotyypeille
-        public event OmaEventHandlerInt MikaMuuttuiInt;
-        public event OmaEventHandlerDouble MikaMuuttuiDouble;
-        public event OmaEventHandlerBool MikaMuuttuiBool;
-        */
+        /// <summary>
+        /// Event, joka nostetaan kun tämän luokan muistissa olevat mitattavat suureet muuttuvat
+        /// </summary>
         public event OmaEventHandler MikaMuuttui;
+        /// <summary>
+        /// Event, joka nostetaan yhteyden tilan muuttuessa
+        /// </summary>
         public event YhteysEventHandler YhteysMuuttui;
 
+        // Merkkijono, mihin tallennetaan yhteyden tila
         private string yhteydenTila = String.Empty;
 
+        // Boolean, mihin tallennetaan tieto siitä, onko client init kutsuttu jo
         private bool initKutsuttu;
 
+        // Metodi, jota kutsutaan kun yhteyden tila muuttuu. Lopuksi nostetaan event, jolla ilmoitetaan tässä tapauksessa yhteyden tilan muuttumisesta toimintalogiikalle
         private void YhteydenTilaMuuttui(object source, ConnectionStatusEventArgs args) 
         {
             ConnectionStatusInfo muuttunutYhteydenTila = args.StatusInfo;
             yhteydenTila = muuttunutYhteydenTila.FullStatusString;
-            Trace.WriteLine("tila: " + yhteydenTila);
             if (yhteydenTila == null)
             {
                 yhteydenTila = "Unknown";
             }
+            // Jos yhteys katkeaa tai simulaattori suljetaan ohjelman ollessa käynnissä, poistetaan asiakas-client ja muutetaan initKutsuttu alkuarvoonsa
             if (yhteydenTila == "ConnectionErrorClientReconnect")
             {
                 asiakas.Dispose();
@@ -58,11 +59,12 @@ namespace Harkkatyö
             }
             YhteysMuuttui(yhteydenTila);
         }
-
+        /// <summary>
+        /// Tällä metodilla otetaan yhteys prosessiin, jos yhteyttä ei vielä ole olemassa
+        /// </summary>
         public void YhdistaProsessiin()
         {
-            Trace.WriteLine("yhteyden tila ennen yhdistämistä: " + yhteydenTila);
-
+            // Jos yhteys katkesi eikä siihen ole ehditty vielä reagoimaan, poistetaan asiakas-client ja muutetaan initKutsuttu alkuarvoonsa
             if (yhteydenTila == "ConnectionErrorClientReconnect")
             {
                 asiakas.Dispose();
@@ -70,6 +72,7 @@ namespace Harkkatyö
             }
             else
             {
+                // Jos yhteyttä ei ole tai sitä ei olle muodostamassa, luodaan uusi asiakas, tilataan eventit sen tilan muutoksista ja kutsutaan init
                 if (yhteydenTila != "Connected" || yhteydenTila != "Connecting")
                 {
                     asiakas = new MppClient(parametrit);
@@ -83,20 +86,27 @@ namespace Harkkatyö
 
 
                 }
-            }
-
-            
-            Trace.Write("Yhteyden tila yhdistämisen jälkeen: " + yhteydenTila);
+            }           
         }
 
+        // Metodit, joilla ohjataan prosessin eri toimilaitteita. Metodit eivät tee kutsuttaessa mitään, jos prosessiin ei ole yhteyttä.
+        /// <summary>
+        /// Metodi muuttaa totuusarvolla ohjattavan toimilaitteen tilan halutusti
+        /// </summary>
+        /// <param name="nimi">Toimilaitteen nimi merkkijonona</param>
+        /// <param name="totuus">Toimilaitteen ohjaus totuusarvona</param>
         public void MuutaOnOff(string nimi, bool totuus)
         {
             if (yhteydenTila == "Connected")
             {
                 asiakas.SetOnOffItem(nimi, totuus);
             }
-            
         }
+        /// <summary>
+        /// Metodi muuttaa pumpun ohjauksen
+        /// </summary>
+        /// <param name="nimi">Pumpun nimi merkkijonona</param>
+        /// <param name="ohjaus">Ohjaus kokonaislukuna, sallittu ohjaus kuuluu välille 0-100</param>
         public void MuutaPumpunOhjaus(string nimi, int ohjaus)
         {
             if (yhteydenTila == "Connected")
@@ -105,6 +115,11 @@ namespace Harkkatyö
             }
                 
         }
+        /// <summary>
+        /// Metodi muuttaa venttiilin ohjauksen
+        /// </summary>
+        /// <param name="nimi">Venttiilin nimi merkkijonona</param>
+        /// <param name="ohjaus">Ohjaus kokonaislukuna, sallittu ohjaus kuuluu välille 0-100</param>
         public void MuutaVenttiilinOhjaus(string nimi, int ohjaus)
         {
             if (yhteydenTila == "Connected") 
@@ -113,129 +128,60 @@ namespace Harkkatyö
             }
                 
         }
-
+        /// <summary>
+        /// Metodi initoi clientin
+        /// </summary>
         public void ClientInit()
         {
-            // Initoidaan client, jonka jälkeen lisätään seurattavat arvot serverin tietoon ja tilataan event ja määritellään event handler
+            // Initoidaan client, jonka jälkeen lisätään seurattavat arvot serverin tietoon
             try
             {
                 asiakas.Init();
                 AddSubscriptions();
-                Thread thread1 = new Thread(MuutaThread);
-                thread1.Start();
+                // Tilataan event seurattavien arvojen muutoksesta ja määritellään event handler
+                asiakas.ProcessItemsChanged += new ProcessItemsChangedEventHandler(MuutaMuuttuneet);
             }
-            catch (Exception e) 
+            catch (Exception)
             {
+                // Jos yhdistämisessä on ongelmia, tulostetaan siitä ilmoitus debug-outputiin
                 Trace.WriteLine("häikkää yhdistämisessä");
             }
-            
-
-        }
-        private void MuutaThread()
-        {
-            asiakas.ProcessItemsChanged += new ProcessItemsChangedEventHandler(MuutaMuuttuneet);
-            //asiakas.ConnectionStatus += new ConnectionStatusEventHandler(YhteydenTilaMuuttui);
-            // Thread.Sleep(500);
         }
         
-        // Metodit Intien, boolien ja doublejen palauttamiseen
+        /// <summary>
+        /// Metodi palauttaa halutun kokonaislukumuotoisen mittaustuloksen
+        /// </summary>
+        /// <param name="nimi">Mittauksen nimi merkkijonona</param>
+        /// <returns>Mittauksen arvo kokonaislukuna</returns>
         public int PalautaInt(string nimi)
         {
             int arvo = mitattavatInt[nimi];
             return arvo;
         }
+        /// <summary>
+        /// Metodi palauttaa halutun totuusarvomuotoisen mittaustuloksen
+        /// </summary>
+        /// <param name="nimi">Mittauksen nimi merkkijonona</param>
+        /// <returns>Mittauksen totuusarvo</returns>
         public bool PalautaBool(string nimi)
         {
             bool arvo = mitattavatBool[nimi];
             return arvo;
         }
+        /// <summary>
+        /// Metodi palauttaa doublemuotoisen mittaustuloksen
+        /// </summary>
+        /// <param name="nimi">Mittuaksen nimi merkkijonona</param>
+        /// <returns>Mittauksen arvo doublena</returns>
         public double PalautaDouble(string nimi)
         {
             double arvo = mitattavatDouble[nimi];
             return arvo;
         }
-        
-
-        // Event sille, jos intit muuttuvat
-        /*public void OmaEventInt()
-        {
-            
-            Dictionary<string, int> MuuttuneetInt = new Dictionary<string, int> { };
-            foreach (string avain in mitattavatInt.Keys) 
-            {
-                if (mitattavatIntVanha.ContainsKey(avain))
-                {
-                    if (!mitattavatInt[avain].Equals(mitattavatIntVanha[avain]))
-                    {
-                        MuuttuneetInt.Add(avain, mitattavatInt[avain]);
-                    }
-                }
-                else
-                {
-                    MuuttuneetInt.Add(avain, mitattavatInt[avain]);
-                }
-            }
-            if (MuuttuneetInt.Count > 0) 
-            {
-                MikaMuuttuiInt(this, new MuuttuneetEventInt(MuuttuneetInt));
-            }
-            
-            
-        }
-        // Event sille, jos doublet muuttuvat
-        
-        public void OmaEventDouble()
-        {            
-                          
-            Dictionary<string, double> MuuttuneetDouble = new Dictionary<string, double> { };
-            foreach (string avain in mitattavatDouble.Keys)
-            {
-                if (mitattavatDoubleVanha.ContainsKey(avain))
-                {
-                    if (!mitattavatDouble[avain].Equals(mitattavatDoubleVanha[avain]))
-                    {
-                        MuuttuneetDouble.Add(avain, mitattavatDouble[avain]);
-                    }
-                }
-                else 
-                {
-                    MuuttuneetDouble.Add(avain, mitattavatDouble[avain]);
-                }                 
-            }
-            if (MuuttuneetDouble.Count > 0)
-            {
-                MikaMuuttuiDouble(this, new MuuttuneetEventDouble(MuuttuneetDouble));
-            }
-            
-
-        }
-        // Event sille, jos boolit muuttuvat
-        public void OmaEventBool()
-        {
-            
-            Dictionary<string, bool> MuuttuneetBool = new Dictionary<string, bool> { };
-            foreach (string avain in mitattavatBool.Keys)
-            {
-                if (mitattavatBoolVanha.ContainsKey(avain))
-                {
-                    if (!mitattavatBool[avain].Equals(mitattavatBoolVanha[avain]))
-                    {
-                        MuuttuneetBool.Add(avain, mitattavatBool[avain]);
-                    }
-                }
-                else
-                {
-                    MuuttuneetBool.Add(avain, mitattavatBool[avain]);
-                }
-            }
-            if (MuuttuneetBool.Count > 0)
-            {
-                MikaMuuttuiBool(this, new MuuttuneetEventBool(MuuttuneetBool));
-            }
-            
-
-        }*/
-
+        /// <summary>
+        /// Metodi, jota kutsutaan kun prosessin muuttuneet arvot on muutettu tämän luokan muistiin. Tarkastetaan kaikki muuttuneet arvot,
+        /// jonka jälkeen tallennetaan ne dictionaryyn, missä avain on mittauksen nimi ja arvo int, joka kuvaa mittauksen muotoa. Int = 0, double = 1 ja bool = 2.
+        /// </summary>
         public void OmaEvent()
         {
             Dictionary<string, int> Muuttuneet = new Dictionary<string, int> { };
@@ -281,15 +227,15 @@ namespace Harkkatyö
                     Muuttuneet.Add(avain, 2);
                 }
             }
+            // Jos muuttuneet arvot sisältävä dictionary ei ole tyhjä, nostetaan event MikaMuuttui ja annetaan sille event argumenteina 
+            // dictionary muuttuneet, jonka jälkeen tyhjennetään dictionary muuttuneet
             if (Muuttuneet.Count > 0)
             {
                 MikaMuuttui(this, new MuuttuneetEvent(Muuttuneet));
                 Muuttuneet.Clear();
             }
         }
-
-
-
+        // Metodilla tilataan halutut prosessin mitattavat arvot
         private void AddSubscriptions()
         {
             // Lisätään mitattavien asioiden subscriptionit
@@ -310,12 +256,11 @@ namespace Harkkatyö
             asiakas.AddToSubscription("LI200");
             asiakas.AddToSubscription("LI400");
             asiakas.AddToSubscription("PI300");
-
-            // Tilataan event käytettävälle event handlerille
-            // asiakas.ProcessItemsChanged += JokinMuuttui;
-
         }
 
+        // Metodilla muutetaan prosessin muuttuneet mittaustulokset tämän luokan omaan muistiin, jonka lisäksi tallennetaan vanhat arvot toiseen dictionaryyn.
+        // Lopuksi nostetaan event siitä, että prosessissa on tapahtunut muutoksia.
+        // Metodia kutsutaan event handlerilla, kun prosessin mitattavissa kohteissa tapahtuu muutoksia
         private void MuutaMuuttuneet(object source, ProcessItemChangedEventArgs args)
         {
             // Metodi, jota event handler kutsuu kun event nousee
@@ -337,7 +282,7 @@ namespace Harkkatyö
                     {
                         mitattavatBoolVanha.Add(itemName, mitattavatBool[itemName]);
                     }
-                    // mitattavatBoolVanha = mitattavatBool;
+
                     mitattavatBool[itemName] = arvo;
                 }
                 if (item.ValueType == MppValue.ValueTypeType.Double)
@@ -353,12 +298,9 @@ namespace Harkkatyö
                         mitattavatDoubleVanha.Add(itemName, mitattavatDouble[itemName]);
                     }
 
-                    // mitattavatDoubleVanha = mitattavatDouble;
+
                     mitattavatDouble[itemName] = arvo;
 
-                    // Kirjotoitetaan double outputiin, tällä hetkellä mukana vain testaustarkoituksessa
-                    // Trace.WriteLine( "uusi " + mitattavatDouble["TI100"].ToString() + " vanha " + mitattavatDoubleVanha["TI100"].ToString());
-                    
                 }
                 if (item.ValueType == MppValue.ValueTypeType.Int)
                 {
@@ -377,49 +319,12 @@ namespace Harkkatyö
                     mitattavatInt[itemName] = arvo;
                 }
             }
-            /*
-            OmaEventBool();
-            OmaEventDouble();
-            OmaEventInt();
-            */
-
             OmaEvent();
 
             Thread.Sleep(500);
         }
-        /*
-        // Säiliöiden pinnankorkeudet
-        private int LI100;
-        private int LI200;
-        private int LI400;
 
-        // Pintavahdit
-        private bool LS200N;
-        private bool LS300N;
-        private bool LS300P;
-
-        // Pumppujen esivalinta
-        private bool P100_P200_PRESET;
-
-        // Pumppujen tilat
-        private int P100;
-        private int P200;
-
-        // Mitattavat lämpötilat
-        private int TI100;
-        private int TI300;
-
-        // Mitattavat paineet
-        private int PI300;
-
-        // Virtaus ennen P100
-        private double FI100;
-
-        // T100 pintahälytys
-        private bool LA100;
-        */
-
-        // Dictit, joissa on eri tyyppiset mitattavat arvot
+        // Dictit, joissa on eri tyyppiset mitattavat arvot ja dictit, joissa on mitattavien arvojen edelliset arvot
 
         private Dictionary<string, bool> mitattavatBoolVanha = new Dictionary<string, bool>() { };
 
@@ -446,31 +351,5 @@ namespace Harkkatyö
             { "TI300", 20 },
             { "FI100", 0 }
         };
-
-        /*
-        // Sulkuventtiilien tilat
-        private bool V101;
-        private bool V103;
-
-        private bool V201;
-        private bool V202;
-        private bool V203;
-        private bool V204;
-
-        private bool V301;
-        private bool V302;
-        private bool V303;
-        private bool V304;
-
-        private bool V401;
-        private bool V402;
-        private bool V403;
-        private bool V404;
-
-        // Säätöventtiilien tilat
-        private int V102;
-        private int V104;
-        */
-
     }
 }

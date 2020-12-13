@@ -70,9 +70,6 @@
       <DependentUpon>MuutaParametreja.xaml</DependentUpon>
     </Compile>
     <Compile Include="MuuttuneetEvent.cs" />
-    <Compile Include="MuuttuneetEventBool.cs" />
-    <Compile Include="MuuttuneetEventDouble.cs" />
-    <Compile Include="MuuttuneetEventInt.cs" />
     <Compile Include="Prosessi.cs" />
     <Compile Include="Saadin.cs" />
     <Compile Include="Toimintalogiikka.cs" />
