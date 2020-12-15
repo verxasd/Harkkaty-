@@ -35,7 +35,7 @@
                 <TextBlock Grid.Row="1" Text="300" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.ColumnSpan="2"/>
                 <TextBlock Grid.Row="3" Text="0" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.ColumnSpan="2"/>
                 <ProgressBar Grid.Row="2" Name="T100PB" Grid.ColumnSpan="2" Width="100" Height="300" ValueChanged="T100PB_ValueChanged" Orientation="Vertical"/>
-                <TextBlock Grid.Row="0"  VerticalAlignment="Center" HorizontalAlignment="Center" Grid.ColumnSpan="2"><Run Text="L"/><Run Text="1"/><Run Text="00 "/><Run Text="Pinnankorkeus"/></TextBlock>
+                <TextBlock Grid.Row="0"  VerticalAlignment="Center" HorizontalAlignment="Center" Grid.ColumnSpan="2"><Run Text="T"/><Run Text="1"/><Run Text="00 "/><Run Text="Pinnankorkeus"/></TextBlock>
                 <TextBlock Grid.Row="4" Text="Korkeus"  VerticalAlignment="Center" HorizontalAlignment="Center"/>
                 <TextBox Grid.Row="4" Grid.Column="1" x:Name="T100KorkeusNum"/>
             </Grid>
@@ -55,7 +55,7 @@
                 <TextBlock Grid.Row="1" Text="400" VerticalAlignment="Bottom" HorizontalAlignment="Center" Grid.ColumnSpan="2" Margin="44,0"/>
                 <TextBlock Grid.Row="3" Text="0" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.ColumnSpan="2"/>
                 <ProgressBar Grid.Row="2" Name="T200PB" Grid.ColumnSpan="2"  Width="100" Height="300" ValueChanged="T200PB_ValueChanged" Orientation="Vertical"/>
-                <TextBlock Grid.Row="0"  VerticalAlignment="Center" HorizontalAlignment="Center" Grid.ColumnSpan="2"><Run Text="L200 "/><Run Text="Pinnankorkeus"/></TextBlock>
+                <TextBlock Grid.Row="0"  VerticalAlignment="Center" HorizontalAlignment="Center" Grid.ColumnSpan="2"><Run Text="T200 "/><Run Text="Pinnankorkeus"/></TextBlock>
                 <TextBlock Grid.Row="4" Text="Korkeus"  VerticalAlignment="Center" HorizontalAlignment="Center"/>
                 <TextBox Grid.Row="4" Grid.Column="1" x:Name="T200KorkeusNum"/>
             </Grid>
@@ -75,7 +75,7 @@
                 <TextBlock Grid.Row="1" Text="400" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.ColumnSpan="2"/>
                 <TextBlock Grid.Row="3" Text="0" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.ColumnSpan="2"/>
                 <ProgressBar Grid.Row="2" Name="T400PB" Grid.ColumnSpan="2" Width="100" Height="300" ValueChanged="T400PB_ValueChanged" Orientation="Vertical"/>
-                <TextBlock Grid.Row="0"  VerticalAlignment="Center" HorizontalAlignment="Center" Grid.ColumnSpan="2"><Run Text="L"/><Run Text="4"/><Run Text="00 "/><Run Text="Pinnankorkeus"/></TextBlock>
+                <TextBlock Grid.Row="0"  VerticalAlignment="Center" HorizontalAlignment="Center" Grid.ColumnSpan="2"><Run Text="T"/><Run Text="4"/><Run Text="00 "/><Run Text="Pinnankorkeus"/></TextBlock>
                 <TextBlock Grid.Row="4" Text="Korkeus"  VerticalAlignment="Center" HorizontalAlignment="Center"/>
                 <TextBox Grid.Row="4" Grid.Column="1" x:Name="T400KorkeusNum"/>
             </Grid>
@@ -95,7 +95,7 @@
                 <TextBlock Grid.Row="1" Text="300" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.ColumnSpan="2"/>
                 <TextBlock Grid.Row="3" Text="0" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.ColumnSpan="2"/>
                 <ProgressBar Grid.Row="2" Name="T300PBpaine" Grid.ColumnSpan="2" Width="100" Height="300" ValueChanged="T300PBpaine_ValueChanged"/>
-                <TextBlock Grid.Row="0"  VerticalAlignment="Center" HorizontalAlignment="Center" Grid.ColumnSpan="2"><Run Text="P"/><Run Text="3"/><Run Text="00 "/><Run Text="Paine"/></TextBlock>
+                <TextBlock Grid.Row="0"  VerticalAlignment="Center" HorizontalAlignment="Center" Grid.ColumnSpan="2"><Run Text="T"/><Run Text="3"/><Run Text="00 "/><Run Text="Paine"/></TextBlock>
                 <TextBlock Grid.Row="4" Text="Paine"  VerticalAlignment="Center" HorizontalAlignment="Center"/>
                 <TextBox Grid.Row="4" Grid.Column="1" x:Name="T300PaineNum"/>
             </Grid>
