@@ -20,7 +20,7 @@ namespace Harkkatyö
     /// Interaction logic for MuutaParametreja.xaml
     /// </summary>
     public partial class MuutaParametreja : Window
-    {
+    {   
         private double tempKeittoaika;
         private double tempKeittolampotila;
         private double tempKyllastysaika;
@@ -46,6 +46,13 @@ namespace Harkkatyö
             KeittoaikaNykyinen.Text = tempKeittoaika.ToString();
             KyllastysaikaNykyinen.Text = tempKyllastysaika.ToString();
             KeittoLampoNykyinen.Text = tempKeittolampotila.ToString();
+            this.Closing += MuutaParametreja_Closing;
+        }
+        // Event handler, jota käytetään kun ikkuna suljetaan.
+        private void MuutaParametreja_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            // Muutetaan pääikkunassa oleva boolean falseksi
+            MainWindow.muutaParametrejaAuki = false;
         }
 
         // Metodi, jolla koitetaan parsia stringistä double. Jos se ei onnistu, palautetaan Nan

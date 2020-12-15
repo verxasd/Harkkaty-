@@ -45,6 +45,8 @@ namespace Harkkatyö
         private int T300paine;
         private double T300lampo;
 
+        private MuutaParametreja muutos;
+
         // Backgroundworker
         private BackgroundWorker bgv1;
         /// <summary>
@@ -76,6 +78,22 @@ namespace Harkkatyö
             bgv1.DoWork += Bgv1_DoWork;
             bgv1.WorkerSupportsCancellation = true;
             bgv1.WorkerReportsProgress = true;
+            this.Closing += MainWindow_Closing;
+        }
+        // Event handler sille, kun pääikkuna suljetaan rastista.
+        private void MainWindow_Closing(object sender, CancelEventArgs e)
+        {
+            // Jos pääikkuna suljetaan rastista, suljetaan myös ikkuna muuta parametreja jos se on auki.
+            if (muutaParametrejaAuki)
+            {
+                muutos.Close();
+                muutaParametrejaAuki = false;
+            }
+            // Jos sekvenssi on käynnissä, pysäytetään se ennen sovelluksen sulkemista
+            if (kaynnissa)
+            {
+                logiikka.PysaytaSekvenssi();
+            }
         }
 
         // Metodi, jolla päivitetään käyttöliittymässä näkyvä yhteyden tila
@@ -185,12 +203,22 @@ namespace Harkkatyö
         /// Kyllästysaika. Muutetaan ikkunan muuta parametreja kautta
         /// </summary>
         public static double kyllastysaika;
+        /// <summary>
+        /// Boolean sille, onko ikkuna "Muuta parametreja" auki
+        /// </summary>
+        public static bool muutaParametrejaAuki;
 
-        // Event handler sille, kun käyttöliittymän painiketta "Muuta parametreja" painetaan
+        // Event handler sille, kun käyttöliittymän painiketta "Käynnistä sekvenssi" painetaan
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            if (muutaParametrejaAuki)
+            {
+                string message = "Sekvenssiä ei voida käynnistää, jos parametrien muuttaminen on kesken!";
+                string title = "Virhe";
+                MessageBox.Show(message, title);
+            }
             // Jos sekvenssi ei ole käynnissä, käynnistetään backgroundworker ja muutetaan totuusarvo "kaynnissa" trueksi
-            if (!kaynnissa) 
+            if (!kaynnissa && !muutaParametrejaAuki) 
             {                
                 bgv1.RunWorkerAsync();
                 kaynnissa = true;
@@ -206,9 +234,17 @@ namespace Harkkatyö
         // Event handler sille, kun käyttöliittymän painiketta "Muuta parametreja" painetaan
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            if (!kaynnissa) 
+            if (muutaParametrejaAuki)
             {
-                MuutaParametreja muutos = new MuutaParametreja();
+                string message = "Olet jo muuttamassa parametreja!";
+                string title = "Virhe";
+                MessageBox.Show(message, title);
+            }
+            if (!kaynnissa && !muutaParametrejaAuki) 
+            {
+                // Jos sekvenssi ei ole käynnissä ja ikkuna "Muuta parametreja" ei ole auki, muutetaan bool muutaParametrejaAuki todeksi ja avataan ikkuna
+                muutos = new MuutaParametreja();
+                muutaParametrejaAuki = true;
                 muutos.Show();
             }
         }
